@@ -4,6 +4,15 @@ let controllInactive = true;
 let logoutInactive = true;
 let scheduleInactive = true;
 
+const circleLoadder = () => {
+  const container = document.createElement('div');
+  container.className = 'lds-roller';
+
+  for (let i = 0; i < 8; i++) container.appendChild(document.createElement('div'));
+
+  return container;
+};
+
 const updateAvatar = async (data) => {
   try {
     var request = new XMLHttpRequest(); 
@@ -188,24 +197,54 @@ const renderControlls = () => {
 };
 
 const renderTutorial  = () => {
+  let playVideo = false;
+  const controlls = document.createElement('div');
+  const progressVideo = document.createElement('div');
   const playerUI = document.getElementById('playerUI');
-
+  const markProgress = document.createElement('div');
+  const playBttn = document.createElement('button');
+  const tutorialPlayer = document.createElement('div');
+  const player = document.createElement('video');
   const tutorialContainer = document.createElement('div');
+  const videoTimer = document.createElement('p');
+  const tutorialActions = document.createElement('div');
+  const maximizeContainer = document.createElement('div');
+  const minimizeContainer = document.createElement('div');
+  const closeContainer = document.createElement('div');
+  const maximizeBttn = document.createElement('button');
+  const maximizeLabel = document.createElement('p');
+  const minimizeBttn = document.createElement('button');
+  const minimizeLabel = document.createElement('p');
+  const closeBttn = document.createElement('button');
+  const closeLabel = document.createElement('p');
+  const playerWrapper = document.createElement('div');
+  
   tutorialContainer.id = 'tutorial-container';
   tutorialContainer.className = 'tutorial-container';
-
-  const tutorialPlayer = document.createElement('div');
+  
   tutorialPlayer.id = 'tutorial-player';
   tutorialPlayer.className = 'tutorial-player';
-
-  const player = document.createElement('video');
+  
   player.src = './video/Video_Tutorial.mp4';
   player.id = 'player';
-  player.className = 'player';
+  player.className = 'player bttn';
   player.autoplay = true;
 
-  const markProgress = document.createElement('div');
-  
+  playerWrapper.id = 'player-wrapper';
+  playerWrapper.className = 'player-wrapper';
+  playerWrapper.onclick = () => {
+    if (playVideo) {
+      playBttn.className = 'play-bttn bttn active';
+      player.play()
+      playVideo = false;
+    } else {
+      playBttn.className = 'play-bttn bttn';
+      player.pause();
+      playVideo = true;
+    }
+  }
+  playerWrapper.appendChild(player);
+
   player.addEventListener('timeupdate', () => {
     const currentMinutos = Math.floor(player.currentTime / 60);
     const currentSegundos = Math.floor(player.currentTime % 60).toString().padStart(2, '0');
@@ -218,13 +257,17 @@ const renderTutorial  = () => {
     const porcentagemCompleta = (tempoAtual / duracaoTotal) * 100;
 
     document.getElementById('mark-progress').style.marginLeft = `${porcentagemCompleta}%`;
+
+    if (tempoAtual === duracaoTotal) {
+      playBttn.className = 'play-bttn bttn';
+      player.currentTime = 0;
+      playVideo = true;
+    }
   });
 
-  const controlls = document.createElement('div');
   controlls.id = 'player-controlls';
   controlls.className = 'player-controlls';
-  
-  const progressVideo = document.createElement('div');
+    
   progressVideo.id = 'progress-video';
   progressVideo.className = 'progress-video bttn';
   progressVideo.onclick = e => {
@@ -247,22 +290,20 @@ const renderTutorial  = () => {
 
   progressVideo.appendChild(markProgress);
   
-  let playVideo = false;
-
-  const playBttn = document.createElement('button');
   playBttn.id = 'play-bttn';
-  playBttn.className = 'play-bttn bttn';
+  playBttn.className = 'play-bttn bttn active';
   playBttn.onclick = () => {
     if (playVideo) {
+      playBttn.className = 'play-bttn bttn active';
       player.play()
       playVideo = false;
     } else {
+      playBttn.className = 'play-bttn bttn';
       player.pause();
       playVideo = true;
     }
   };
 
-  const videoTimer = document.createElement('p');
   videoTimer.id = 'video-timer';
   videoTimer.className = 'video-timer';
   videoTimer.appendChild(document.createTextNode('00:00:00'));
@@ -271,22 +312,15 @@ const renderTutorial  = () => {
   controlls.appendChild(playBttn);
   controlls.appendChild(videoTimer);
 
-  tutorialPlayer.appendChild(player);
+  tutorialPlayer.appendChild(playerWrapper);
   tutorialPlayer.appendChild(controlls);
 
-  const tutorialActions = document.createElement('div');
   tutorialActions.id = 'tutorial-actions';
   tutorialActions.className = 'tutorial-actions';
-  
-  const maximizeContainer = document.createElement('div');
+
   maximizeContainer.id = 'minimize-container';
   maximizeContainer.className = 'minimize-container';
 
-  const minimizeContainer = document.createElement('div');
-
-  const closeContainer = document.createElement('div');
-
-  const maximizeBttn = document.createElement('button');
   maximizeBttn.id = 'maximize-bttn';
   maximizeBttn.className = 'maximize-bttn bttn';
   maximizeBttn.onclick = () => {
@@ -308,7 +342,6 @@ const renderTutorial  = () => {
     tutorialActions.appendChild(closeContainer)
   }
 
-  const maximizeLabel = document.createElement('p');
   maximizeLabel.id = 'maximize-label';
   maximizeLabel.className = 'maximize-label';
   maximizeLabel.appendChild(document.createTextNode('Maximizar Player'));
@@ -318,8 +351,7 @@ const renderTutorial  = () => {
 
   minimizeContainer.id = 'minimize-container';
   minimizeContainer.className = 'minimize-container';
-
-  const minimizeBttn = document.createElement('button');
+ 
   minimizeBttn.id = 'minimize-bttn';
   minimizeBttn.className = 'minimize-bttn bttn';
   minimizeBttn.onclick = () => {
@@ -340,8 +372,7 @@ const renderTutorial  = () => {
     tutorialActions.appendChild(maximizeContainer)
     tutorialActions.appendChild(closeContainer)
   }
-
-  const minimizeLabel = document.createElement('p');
+ 
   minimizeLabel.id = 'minimize-label';
   minimizeLabel.className = 'minimize-label';
   minimizeLabel.appendChild(document.createTextNode('Reduzir Player'));
@@ -351,16 +382,16 @@ const renderTutorial  = () => {
   
   closeContainer.id = 'close-container';
   closeContainer.className = 'close-container';
-
-  const closeBttn = document.createElement('button');
+ 
   closeBttn.id = 'close-bttn-video';
   closeBttn.className = 'close-bttn-video bttn';
   closeBttn.onclick = () => {
+    const helpBttn = document.getElementById('help-bttn');
+    helpBttn.className = helpBttn.className.replace(' active', '');
     helpInactive = true;
     playerUI.removeChild(tutorialContainer)
   };
 
-  const closeLabel = document.createElement('p');
   closeLabel.id = 'close-label';
   closeLabel.className = 'close-label';
   closeLabel.appendChild(document.createTextNode('Fechar Player'));
@@ -466,8 +497,6 @@ const renderSchedule = async data => {
   headerModal.className = 'header-modal-schedule';
   headerModal.appendChild(document.createTextNode('AGENDA'));
 
-  const list = await fetchList();
-  
   const playerUI = document.getElementById('playerUI');
   const scheduleContainer = document.createElement('div');
 
@@ -476,52 +505,77 @@ const renderSchedule = async data => {
 
   scheduleContainer.appendChild(headerModal);
 
+  const loading = circleLoadder();
+
+  scheduleContainer.appendChild(loading);
+
+  const backPlate = document.createElement('div');
+  backPlate.id = 'back-plate-schedule';
+  backPlate.className = 'back-plate-schedule';
+
+  backPlate.appendChild(scheduleContainer);
+
+  playerUI.appendChild(backPlate);
+
+  const list = await fetchList();
+
   const wrapperRow = document.createElement('div');
   wrapperRow.id = 'wrapper-row';
   wrapperRow.className = 'wrapper-row';
 
-  for (let el of list) {
-    const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${el.startAt.hour}:${el.startAt.minute}`;
-    const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${el.endAt.hour}:${el.endAt.minute}`;
-    const eventMoment = `${startAtContent} | ${endAtContent}`;
-    const eventName = el.eventName;
-    const eventPlace = el.placeName;
+  if (list.length > 0) {
+    for (let el of list) {
+      const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${el.startAt.hour}:${el.startAt.minute}`;
+      const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${el.endAt.hour}:${el.endAt.minute}`;
+      const eventMoment = `${startAtContent} | ${endAtContent}`;
+      const eventName = el.eventName;
+      const eventPlace = el.placeName;
+  
+      const row = document.createElement('div');
+      row.id = 'row-schedule';
+      row.className = 'row-schedule';
+  
+      const rowHeader = document.createElement('p');
+      rowHeader.id = 'row-header-schedule';
+      rowHeader.className = 'row-header-schedule';
+      rowHeader.appendChild(document.createTextNode(eventName));
+  
+      const rowInfos = document.createElement('div');
+      rowInfos.id = 'row-infos-schedule';
+      rowInfos.className = 'row-infos-schedule';
+  
+      const eventPlaceText = document.createElement('p');
+      eventPlaceText.id = 'event-place-text';
+      eventPlaceText.className = 'event-place-text';
+      eventPlaceText.appendChild(document.createTextNode(eventPlace));
+  
+      const eventMomentText = document.createElement('p');
+      eventMomentText.id = 'event-moment-text';
+      eventMomentText.className = 'event-moment-text';
+      eventMomentText.appendChild(document.createTextNode(eventMoment))
+  
+      rowInfos.appendChild(eventPlaceText);
+      rowInfos.appendChild(eventMomentText);
+  
+      row.appendChild(rowHeader);
+      row.appendChild(rowInfos);
+  
+      wrapperRow.appendChild(row);
+    }
+  } else {
+    const notFoundText = document.createElement('p');
+    notFoundText.appendChild(document.createTextNode('Não foram encontrados eventos.'));
+    notFoundText.id = 'not-found-text';
+    notFoundText.className = 'not-found-text';
 
-    const row = document.createElement('div');
-    row.id = 'row-schedule';
-    row.className = 'row-schedule';
 
-    const rowHeader = document.createElement('p');
-    rowHeader.id = 'row-header-schedule';
-    rowHeader.className = 'row-header-schedule';
-    rowHeader.appendChild(document.createTextNode(eventName));
-
-    const rowInfos = document.createElement('div');
-    rowInfos.id = 'row-infos-schedule';
-    rowInfos.className = 'row-infos-schedule';
-
-    const eventPlaceText = document.createElement('p');
-    eventPlaceText.id = 'event-place-text';
-    eventPlaceText.className = 'event-place-text';
-    eventPlaceText.appendChild(document.createTextNode(eventPlace));
-
-    const eventMomentText = document.createElement('p');
-    eventMomentText.id = 'event-moment-text';
-    eventMomentText.className = 'event-moment-text';
-    eventMomentText.appendChild(document.createTextNode(eventMoment))
-
-    rowInfos.appendChild(eventPlaceText);
-    rowInfos.appendChild(eventMomentText);
-
-    row.appendChild(rowHeader);
-    row.appendChild(rowInfos);
-
-    wrapperRow.appendChild(row);
+    wrapperRow.appendChild(notFoundText)
   }
 
+
+  scheduleContainer.removeChild(loading);
+
   scheduleContainer.appendChild(wrapperRow);
-  
-  playerUI.appendChild(scheduleContainer);
 }
 
 const renderChat = (chatNameText) => {
@@ -604,11 +658,17 @@ const renderHud = () => {
   const baseUrl = "https://admin-brasilagriland.com.br/hub/auth/schedule";
 
   const createButton = (id, className, onClick, content) => {
+    let activeBttn = true;
     const button = document.createElement('button');
-
-    button.onclick = onClick;
-    button.id = id;
     button.className = className;
+    button.id = id;
+
+    button.onclick = () => {
+      button.className = `${className}${activeBttn ? ' active' : ''}`
+      activeBttn = !activeBttn;
+      onClick();
+    };
+
     button.appendChild(document.createTextNode(content));
 
     return button;
@@ -623,11 +683,10 @@ const renderHud = () => {
       if (scheduleInactive) {
         scheduleInactive = false;
         renderSchedule();
-        
       } else {
         scheduleInactive = true;
         const playerUI = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById('schedule-container'));
+        playerUI.removeChild(document.getElementById('back-plate-schedule'));
       }
     },
     ''
@@ -640,6 +699,10 @@ const renderHud = () => {
       if (helpInactive) {
         helpInactive = false;
         renderTutorial();
+      } else {
+        helpInactive = true;
+        const helpContainer = document.getElementById('tutorial-container');
+        playerUI.removeChild(helpContainer);
       }
     },
     ''
@@ -697,7 +760,7 @@ const renderHud = () => {
       } else {
         logoutInactive = true;
         const playerUi = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById(''))
+        playerUI.removeChild(document.getElementById('wrapper-modal-quit'))
       }
     },
     ''
