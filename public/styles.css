@@ -474,7 +474,7 @@ body {
   height: 30%;
 
   position: absolute;
-  right: 59px;
+  right: 3%;
   top: 232px;
   
   font-family: sans-serif;
@@ -745,19 +745,23 @@ body {
   background: #6b6b6b;
 }
 
-.controll-container {
+.back-plate-controll {
   position: absolute;
-  top: 291px;
-  right: 73px;
-  
+  top: 30.3%;
+  right: 3%;
+
+  width: 550px;
+}
+
+.controll-container {
   display: flex;
   flex-direction: column;
 
   background: white;
 
-  width: 500px;
-
   border: 2px solid #dcdc01;
+
+  width: 90%;
 }
 
 .controlls {
@@ -773,8 +777,8 @@ body {
 
 .header-controll {
   background: #dcdc01;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 14px;
+  padding-bottom: 14px;
   padding-left: 10px;
 
   margin: 0px;
@@ -923,7 +927,7 @@ body {
   background-color: #dcdc01;
 
   padding-left: 25px;
-  padding-top: 13.5px;
+  padding-top: 14.5px;
   padding-bottom: 13.5px;
 
   margin: 0px;

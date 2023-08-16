@@ -128,6 +128,10 @@ const renderQuit = () => {
 const renderControlls = () => {
   const playerUI = document.getElementById('playerUI');
 
+  const backPlate = document.createElement('div');
+  backPlate.id = 'back-plate-controll';
+  backPlate.className = 'back-plate-controll';
+
   const controllContainer = document.createElement('div');
   controllContainer.id = 'controll-container';
   controllContainer.className = 'controll-container';
@@ -140,7 +144,6 @@ const renderControlls = () => {
   const controlls = document.createElement('div');
   controlls.id = 'controlls';
   controlls.className = 'controlls';
-
   
   const createControllHelper = (name, content, text) => {
     const variableControll = document.createElement('p');
@@ -191,9 +194,12 @@ const renderControlls = () => {
 
   for (const el of [leftContainer, rightContainer]) controlls.appendChild(el);
   
-  for (const el of [headerControll, controlls]) controllContainer.appendChild(el);
+  controllContainer.appendChild(controlls);
 
-  playerUI.appendChild(controllContainer);
+  backPlate.appendChild(headerControll);
+  backPlate.appendChild(controllContainer);
+
+  playerUI.appendChild(backPlate);
 };
 
 const renderTutorial  = () => {
@@ -737,7 +743,7 @@ const renderHud = () => {
       else {
         controllInactive = true;
         const playerUI = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById('controll-container'));
+        playerUI.removeChild(document.getElementById('back-plate-controll'));
       } 
     },
     ''
