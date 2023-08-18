@@ -1,8 +1,22 @@
 let userData;
-let helpInactive = true;
-let controllInactive = true;
-let logoutInactive = true;
-let scheduleInactive = true;
+
+let modalStates = {
+  'schedule-bttn': true, 
+  'help-bttn': true, 
+  'avatar-bttn': true, 
+  'controls-bttn': true,
+  'chat-bttn': true,
+  'logout-bttn': true, 
+};
+
+const modalsContainers = {
+  'schedule-bttn': 'back-plate-schedule', 
+  'help-bttn': 'tutorial-container', 
+  'avatar-bttn': 'iframe-container', 
+  'controls-bttn': 'back-plate-controll',
+  'chat-bttn': 'container-chat',
+  'logout-bttn': 'wrapper-modal-quit', 
+};
 
 const circleLoadder = () => {
   const container = document.createElement('div');
@@ -254,15 +268,15 @@ const renderTutorial  = () => {
   player.addEventListener('timeupdate', () => {
     const currentMinutos = Math.floor(player.currentTime / 60);
     const currentSegundos = Math.floor(player.currentTime % 60).toString().padStart(2, '0');
-    document.getElementById('video-timer').innerHTML = `00:${currentMinutos.toString().padStart(2, '0')}:${currentSegundos}`
-    document.getElementById('mark-progress').style.marginLeft = '3';
+    videoTimer.innerHTML = `00:${currentMinutos.toString().padStart(2, '0')}:${currentSegundos}`
+    markProgress.style.marginLeft = '3';
 
     const duracaoTotal = player.duration;
     const tempoAtual = player.currentTime;
 
     const porcentagemCompleta = (tempoAtual / duracaoTotal) * 100;
 
-    document.getElementById('mark-progress').style.marginLeft = `${porcentagemCompleta}%`;
+    markProgress.style.marginLeft = `${porcentagemCompleta}%`;
 
     if (tempoAtual === duracaoTotal) {
       playBttn.className = 'play-bttn bttn';
@@ -672,6 +686,21 @@ const renderHud = () => {
     button.onclick = () => {
       button.className = `${className}${activeBttn ? ' active' : ''}`
       activeBttn = !activeBttn;
+
+      const state = modalStates[`${id}`];
+      if (state) {
+        const states = Object.entries(modalStates).filter(value => value[0] !== id);
+
+        states.forEach(value => {
+          const el = document.getElementById(modalsContainers[value[0]]);
+          if (el) {
+            playerUI.removeChild(el);
+            const bttn = document.getElementById(value[0]);
+            bttn.className = bttn.className.replace(' active', '');
+          }
+        });
+      }
+
       onClick();
     };
 
@@ -686,11 +715,11 @@ const renderHud = () => {
     'schedule-bttn',
     'schedule-bttn bttn',
     () => {
-      if (scheduleInactive) {
-        scheduleInactive = false;
+      if (modalStates['schedule-bttn']) {
+        modalStates['schedule-bttn'] = false;
         renderSchedule();
       } else {
-        scheduleInactive = true;
+        modalStates['schedule-bttn'] = true;
         const playerUI = document.getElementById('playerUI');
         playerUI.removeChild(document.getElementById('back-plate-schedule'));
       }
@@ -702,11 +731,11 @@ const renderHud = () => {
     'help-bttn',
     'help-bttn bttn',
     () => {
-      if (helpInactive) {
-        helpInactive = false;
+      if (modalStates['help-bttn']) {
+        modalStates['help-bttn'] = false;
         renderTutorial();
       } else {
-        helpInactive = true;
+        modalStates['help-bttn'] = true;
         const helpContainer = document.getElementById('tutorial-container');
         playerUI.removeChild(helpContainer);
       }
@@ -717,7 +746,16 @@ const renderHud = () => {
   const avatarBttn = createButton(
     'avatar-bttn',
     'avatar-bttn bttn',
-    renderRPM,
+    () => {
+      if (modalStates['avatar-bttn']) {
+        modalStates['avatar-bttn'] = false;
+        renderRPM();
+      } else {
+        modalStates['avatar-bttn'] = true;
+        const iframeContainer = document.getElementById('iframe-container');
+        playerUI.removeChild(iframeContainer);
+      }
+    },
     ''
   );
 
@@ -736,12 +774,12 @@ const renderHud = () => {
     'controls-bttn',
     'controls-bttn bttn',
     () => {
-      if (controllInactive) {
-        controllInactive = false;
+      if (modalStates['controls-bttn']) {
+        modalStates['controls-bttn'] = false;
         renderControlls();
       }
       else {
-        controllInactive = true;
+        modalStates['controls-bttn'] = true;
         const playerUI = document.getElementById('playerUI');
         playerUI.removeChild(document.getElementById('back-plate-controll'));
       } 
@@ -760,11 +798,11 @@ const renderHud = () => {
     'logout-bttn',
     'logout-bttn bttn',
     () => {
-      if (logoutInactive) {
-        logoutInactive = false;
+      if (modalStates['logout-bttn']) {
+        modalStates['logout-bttn'] = false;
         renderQuit();
       } else {
-        logoutInactive = true;
+        modalStates['logout-bttn'] = true;
         const playerUi = document.getElementById('playerUI');
         playerUI.removeChild(document.getElementById('wrapper-modal-quit'))
       }
@@ -776,7 +814,14 @@ const renderHud = () => {
     'chat-bttn',
     'chat-bttn bttn',
     () => {
-      renderChat('local');
+      if (modalStates['chat-bttn']) {
+        modalStates['chat-bttn'] - false;
+        renderChat('local');
+      } else {
+        modalStates['chat-bttn'] - true;
+        const playerUi = document.getElementById('playerUI');
+        playerUI.removeChild(document.getElementById('container-chat'))
+      }
     },
     ''
   );
