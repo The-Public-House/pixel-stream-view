@@ -1,14 +1,5 @@
 let userData;
 
-const MODAL_STATES_INITIAL = {
-  'schedule-bttn': true, 
-  'help-bttn': true, 
-  'avatar-bttn': true, 
-  'controls-bttn': true,
-  'chat-bttn': true,
-  'logout-bttn': true, 
-};
-
 let modalStates = {
   'schedule-bttn': true, 
   'help-bttn': true, 
@@ -120,7 +111,14 @@ const renderQuit = () => {
     const root = document.getElementById('root');
     root.removeChild(document.getElementById('card-login'));
     root.style.display = '';
-    modalStates = MODAL_STATES_INITIAL;
+    modalStates = {
+      'schedule-bttn': true, 
+      'help-bttn': true, 
+      'avatar-bttn': true, 
+      'controls-bttn': true,
+      'chat-bttn': true,
+      'logout-bttn': true,
+    };
     console.log(modalStates);
     console.log(MODAL_STATES_INITIAL);
     
