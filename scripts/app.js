@@ -95,8 +95,10 @@ const renderQuit = () => {
   closeBttn.className = 'close-bttn-quit bttn';
   closeBttn.appendChild(document.createTextNode('X'));
   closeBttn.onclick = () => {
-    logoutInactive = true;
+    modalStates['logout-bttn'] = true;
     playerUI.removeChild(document.getElementById('wrapper-modal-quit'))
+    const bttn = document.getElementById('logout-bttn');
+    bttn.className = bttn.className.replace(' active', '');
   };
 
   const quitBttn = document.createElement('button');
