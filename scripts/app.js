@@ -1,12 +1,21 @@
 let userData;
 
-let modalStates = {
+const MODAL_STATES_INITIAL = {
   'schedule-bttn': true, 
   'help-bttn': true, 
   'avatar-bttn': true, 
   'controls-bttn': true,
   'chat-bttn': true,
   'logout-bttn': true, 
+};
+
+let modalStates = {
+  'schedule-bttn': true, 
+  'help-bttn': true, 
+  'avatar-bttn': true, 
+  'controls-bttn': true,
+  'chat-bttn': true,
+  'logout-bttn': true,
 };
 
 const modalsContainers = {
@@ -104,6 +113,19 @@ const renderQuit = () => {
   const quitBttn = document.createElement('button');
   quitBttn.id = 'quit-bttn';
   quitBttn.className = 'quit-bttn bttn';
+  quitBttn.onclick = () => {
+    playerUI.removeChild(document.getElementById('wrapper-modal-quit'));
+    playerUI.removeChild(document.getElementById('help-bttn'));
+    playerUI.removeChild(document.getElementById('side-left-bar'));
+    const root = document.getElementById('root');
+    root.removeChild(document.getElementById('card-login'));
+    root.style.display = '';
+    modalStates = MODAL_STATES_INITIAL;
+    console.log(modalStates);
+    console.log(MODAL_STATES_INITIAL);
+    
+    render();
+  };
 
   const quitBttnLabel = document.createElement('p');
   quitBttnLabel.id = 'quit-bttn-label';
@@ -830,6 +852,7 @@ const renderHud = () => {
 
   const sideLeftBar = document.createElement('div');
   sideLeftBar.className ='side-left-bar';
+  sideLeftBar.id ='side-left-bar';
 
   const topSideBar = document.createElement('div');
   topSideBar.className = 'top-side-bar';
