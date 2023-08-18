@@ -8,6 +8,8 @@ body {
   height: 100%;
   margin: 0px !important;
   background-size: cover;
+
+  font-family: sans-serif;
 }
 
 #root {
