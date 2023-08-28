@@ -1,3 +1,15 @@
+// Start Utils Sections
+const genericCreateElement = (type, id, className) => {
+  const element = document.createElement(type)
+  element.className = className;
+  element.id = id;
+
+  return element;
+};
+
+// End Utils Sections
+
+// Start Variables Sections
 let userData;
 
 let modalStates = {
@@ -17,6 +29,8 @@ const modalsContainers = {
   'chat-bttn': 'container-chat',
   'logout-bttn': 'wrapper-modal-quit', 
 };
+// End Variables Sections
+
 
 const circleLoadder = () => {
   const container = document.createElement('div');
@@ -90,9 +104,7 @@ const emitUIInteraction = value => console.log(value);
 const renderQuit = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const closeBttn = document.createElement('button');
-  closeBttn.id = 'close-bttn-quit';
-  closeBttn.className = 'close-bttn-quit bttn';
+  const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'close-bttn-quit bttn');
   closeBttn.appendChild(document.createTextNode('X'));
   closeBttn.onclick = () => {
     modalStates['logout-bttn'] = true;
@@ -101,9 +113,7 @@ const renderQuit = () => {
     bttn.className = bttn.className.replace(' active', '');
   };
 
-  const quitBttn = document.createElement('button');
-  quitBttn.id = 'quit-bttn';
-  quitBttn.className = 'quit-bttn bttn';
+  const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
   quitBttn.onclick = () => {
     playerUI.removeChild(document.getElementById('wrapper-modal-quit'));
     playerUI.removeChild(document.getElementById('help-bttn'));
@@ -125,34 +135,22 @@ const renderQuit = () => {
     render();
   };
 
-  const quitBttnLabel = document.createElement('p');
-  quitBttnLabel.id = 'quit-bttn-label';
-  quitBttnLabel.className = 'quit-bttn-label';
+  const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
   quitBttnLabel.appendChild(document.createTextNode('Sair'));
 
-  const quitBttnContainer = document.createElement('div');
-  quitBttnContainer.id = 'quit-bttn-container';
-  quitBttnContainer.className = 'quit-bttn-container';
+  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container')
 
   for (const el of [quitBttn, quitBttnLabel]) quitBttnContainer.appendChild(el);
 
-  const header = document.createElement('p');
-  header.id = 'header-quit';
-  header.className = 'header-quit';
+  const header = genericCreateElement('p', 'header-quit', 'header-quit');
   header.appendChild(document.createTextNode('Logout'));
 
-  const text = document.createElement('p');
-  text.id = 'text-quit';
-  text.className = 'text-quit';
+  const text = genericCreateElement('p', 'text-quit', 'text-quit');
   text.appendChild(document.createTextNode('Deseja realmente sair de Agriland?'));
 
-  const contentModal = document.createElement('div');
-  contentModal.id = 'content-modal-quit';
-  contentModal.className = 'content-modal-quit';
+  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit');
 
-  const wrapperModal = document.createElement('div');
-  wrapperModal.id = 'wrapper-modal-quit';
-  wrapperModal.className = 'wrapper-modal-quit';
+  const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'wrapper-modal-quit');
 
   for (const el of [header, text, quitBttnContainer]) contentModal.appendChild(el);
 
@@ -164,46 +162,28 @@ const renderQuit = () => {
 const renderControlls = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const backPlate = document.createElement('div');
-  backPlate.id = 'back-plate-controll';
-  backPlate.className = 'back-plate-controll';
+  const backPlate = genericCreateElement('div', 'back-plate-controll', 'back-plate-controll');
 
-  const controllContainer = document.createElement('div');
-  controllContainer.id = 'controll-container';
-  controllContainer.className = 'controll-container';
+  const controllContainer = genericCreateElement('div', 'controll-container', 'controll-container');
 
-  const headerControll = document.createElement('p');
-  headerControll.id = 'header-controll';
-  headerControll.className = 'header-controll';
+  const headerControll = genericCreateElement('p', 'header-controll', 'header-controll');
   headerControll.appendChild(document.createTextNode('COMANDOS'));
 
-  const controlls = document.createElement('div');
-  controlls.id = 'controlls';
-  controlls.className = 'controlls';
+  const controlls = genericCreateElement('div', 'controlls', 'controlls');
   
   const createControllHelper = (name, content, text) => {
-    const variableControll = document.createElement('p');
-    variableControll.id = `${name}-controll`;
-    variableControll.className = `${name}-controll button-controll`;
+    const variableControll = genericCreateElement('p', `${name}-controll`, `${name}-controll button-controll`);
     variableControll.appendChild(document.createTextNode(content))
   
-    const variableControllLabel = document.createElement('p');
-    variableControllLabel.id = `${name}-controll-label`;
-    variableControllLabel.className = `${name}-controll-label`;
-    
-    const variableControllContainer = document.createElement('div');
-    variableControllContainer.id = `${name}ControllContainer`;
-    variableControllContainer.className = `${name}-controll-container layout-controll-container`;
+    const variableControllLabel = genericCreateElement('p', `${name}-controll-label`, `${name}-controll-label`)
+
+    const variableControllContainer = genericCreateElement('div', `${name}ControllContainer`, `${name}-controll-container layout-controll-container`);
 
     variableControllLabel.appendChild(document.createTextNode(text));
 
-    const variableArrow = document.createElement('div');
-    variableArrow.id = 'arrow';
-    variableArrow.className = 'arrow';
+    const variableArrow = genericCreateElement('div', 'arrow', 'arrow');
     
-    variableControllContainer.appendChild(variableControll);
-    variableControllContainer.appendChild(variableArrow);
-    variableControllContainer.appendChild(variableControllLabel);
+    for (const el of [variableControll, variableArrow, variableControllLabel]) variableControllContainer.appendChild(el);
     
     return variableControllContainer;
   };
@@ -212,9 +192,6 @@ const renderControlls = () => {
   const leftControllContainer = createControllHelper('left', 'A', 'esquerda');
   const rightControllContainer = createControllHelper('right', 'D', 'direita');
   const downControllContainer = createControllHelper('down', 'S', 'trás');
-  const cameraControllContainer = createControllHelper('camera', 'V', 'alternar câmera');
-  const jumpControllContainer = createControllHelper('jump', 'Barra de Espaço',  'saltar');
-  const runControllContainer = createControllHelper('run', 'Shift',  'correr');
 
   const leftContainer = document.createElement('div');
   leftContainer.id = 'left-container-controll';
@@ -226,54 +203,46 @@ const renderControlls = () => {
   rightContainer.id = 'right-container-controll';
   rightContainer.className = 'right-container-controll side-container-controll';
 
+  const cameraControllContainer = createControllHelper('camera', 'V', 'alternar câmera');
+  const jumpControllContainer = createControllHelper('jump', 'Barra de Espaço',  'saltar');
+  const runControllContainer = createControllHelper('run', 'Shift',  'correr');
+
   for (const el of [cameraControllContainer, jumpControllContainer, runControllContainer]) rightContainer.appendChild(el);
 
   for (const el of [leftContainer, rightContainer]) controlls.appendChild(el);
   
   controllContainer.appendChild(controlls);
 
-  backPlate.appendChild(headerControll);
-  backPlate.appendChild(controllContainer);
+  for (const el of [headerControll, controllContainer]) backPlate.appendChild(el);
 
   playerUI.appendChild(backPlate);
 };
 
 const renderTutorial  = () => {
   let playVideo = false;
-  const controlls = document.createElement('div');
-  const progressVideo = document.createElement('div');
   const playerUI = document.getElementById('playerUI');
-  const markProgress = document.createElement('div');
-  const playBttn = document.createElement('button');
-  const tutorialPlayer = document.createElement('div');
-  const player = document.createElement('video');
-  const tutorialContainer = document.createElement('div');
-  const videoTimer = document.createElement('p');
-  const tutorialActions = document.createElement('div');
-  const maximizeContainer = document.createElement('div');
-  const minimizeContainer = document.createElement('div');
-  const closeContainer = document.createElement('div');
-  const maximizeBttn = document.createElement('button');
-  const maximizeLabel = document.createElement('p');
-  const minimizeBttn = document.createElement('button');
-  const minimizeLabel = document.createElement('p');
-  const closeBttn = document.createElement('button');
-  const closeLabel = document.createElement('p');
-  const playerWrapper = document.createElement('div');
-  
-  tutorialContainer.id = 'tutorial-container';
-  tutorialContainer.className = 'tutorial-container';
-  
-  tutorialPlayer.id = 'tutorial-player';
-  tutorialPlayer.className = 'tutorial-player';
-  
-  player.src = './video/Video_Tutorial.mp4';
-  player.id = 'player';
-  player.className = 'player bttn';
+  const playBttn = genericCreateElement('button', 'play-bttn', 'play-bttn bttn active');
+  const maximizeBttn = genericCreateElement('button', 'maximize-bttn', 'maximize-bttn bttn');
+  const minimizeBttn = genericCreateElement('button', 'minimize-bttn', 'minimize-bttn bttn');
+  const closeBttn = genericCreateElement('button', 'close-bttn-video', 'close-bttn-video bttn');
+  const controlls = genericCreateElement('div', 'player-controlls', 'player-controlls');
+  const progressVideo = genericCreateElement('div', 'progress-video', 'progress-video bttn');
+  const markProgress = genericCreateElement('div', 'mark-progress', 'mark-progress bttn');
+  const tutorialPlayer = genericCreateElement('div', 'tutorial-player', 'tutorial-player');
+  const tutorialContainer = genericCreateElement('div', 'tutorial-container', 'tutorial-container maximize');
+  const tutorialActions = genericCreateElement('div', 'tutorial-actions', 'tutorial-actions');
+  const maximizeContainer = genericCreateElement('div', 'maximize-container', 'maximize-container');
+  const minimizeContainer = genericCreateElement('div', 'minimize-container', 'minimize-container');
+  const playerWrapper = genericCreateElement('div', 'player-wrapper', 'player-wrapper');
+  const closeContainer = genericCreateElement('div', 'close-container', 'close-container');
+  const videoTimer = genericCreateElement('p', 'video-timer', 'video-timer');
+  const maximizeLabel = genericCreateElement('p', 'maximize-label', 'maximize-label');
+  const minimizeLabel = genericCreateElement('p', 'minimize-label', 'minimize-label');
+  const closeLabel = genericCreateElement('p', 'close-label', 'close-label');
+  const player = genericCreateElement('video', 'player', 'player bttn');
+
   player.autoplay = true;
 
-  playerWrapper.id = 'player-wrapper';
-  playerWrapper.className = 'player-wrapper';
   playerWrapper.onclick = () => {
     if (playVideo) {
       playBttn.className = 'play-bttn bttn active';
@@ -285,33 +254,29 @@ const renderTutorial  = () => {
       playVideo = true;
     }
   }
+
   playerWrapper.appendChild(player);
 
   player.addEventListener('timeupdate', () => {
-    const currentMinutos = Math.floor(player.currentTime / 60);
-    const currentSegundos = Math.floor(player.currentTime % 60).toString().padStart(2, '0');
-    videoTimer.innerHTML = `00:${currentMinutos.toString().padStart(2, '0')}:${currentSegundos}`
+    const currentMin = Math.floor(player.currentTime / 60);
+    const currentSec = Math.floor(player.currentTime % 60).toString().padStart(2, '0');
+    videoTimer.innerHTML = `00:${currentMin.toString().padStart(2, '0')}:${currentSec}`
     markProgress.style.marginLeft = '3';
 
-    const duracaoTotal = player.duration;
-    const tempoAtual = player.currentTime;
+    const totalTime = player.duration;
+    const currentTime = player.currentTime;
 
-    const porcentagemCompleta = (tempoAtual / duracaoTotal) * 100;
+    const percentage = (currentTime / totalTime) * 100;
 
-    markProgress.style.marginLeft = `${porcentagemCompleta}%`;
+    markProgress.style.marginLeft = `${percentage}%`;
 
-    if (tempoAtual === duracaoTotal) {
+    if (currentTime === totalTime) {
       playBttn.className = 'play-bttn bttn';
       player.currentTime = 0;
       playVideo = true;
     }
   });
 
-  controlls.id = 'player-controlls';
-  controlls.className = 'player-controlls';
-    
-  progressVideo.id = 'progress-video';
-  progressVideo.className = 'progress-video bttn';
   progressVideo.onclick = e => {
     player.pause();
     const progressBar = progressVideo.getBoundingClientRect();
@@ -327,13 +292,8 @@ const renderTutorial  = () => {
     player.play();
   };
 
-  markProgress.id = 'mark-progress';
-  markProgress.className = 'mark-progress bttn';
-
   progressVideo.appendChild(markProgress);
   
-  playBttn.id = 'play-bttn';
-  playBttn.className = 'play-bttn bttn active';
   playBttn.onclick = () => {
     if (playVideo) {
       playBttn.className = 'play-bttn bttn active';
@@ -346,8 +306,6 @@ const renderTutorial  = () => {
     }
   };
 
-  videoTimer.id = 'video-timer';
-  videoTimer.className = 'video-timer';
   videoTimer.appendChild(document.createTextNode('00:00:00'));
 
   controlls.appendChild(progressVideo);
@@ -357,20 +315,8 @@ const renderTutorial  = () => {
   tutorialPlayer.appendChild(playerWrapper);
   tutorialPlayer.appendChild(controlls);
 
-  tutorialActions.id = 'tutorial-actions';
-  tutorialActions.className = 'tutorial-actions';
-
-  maximizeContainer.id = 'minimize-container';
-  maximizeContainer.className = 'minimize-container';
-
-  maximizeBttn.id = 'maximize-bttn';
-  maximizeBttn.className = 'maximize-bttn bttn';
   maximizeBttn.onclick = () => {
-    tutorialContainer.style.width = '70%';
-    tutorialContainer.style.height = '90%';
-    tutorialContainer.style.top = '50%';
-    tutorialContainer.style.left = '50%';
-    tutorialContainer.style.transform = 'translate(-50%, -50%)';
+    tutorialContainer.className = tutorialContainer.className.replace(' maximize', ' minimize');
 
     document.getElementById('tutorial-player').style.height = '95%';
     document.getElementById('progress-video').style.bottom = '148px';
@@ -384,23 +330,15 @@ const renderTutorial  = () => {
     tutorialActions.appendChild(closeContainer)
   }
 
-  maximizeLabel.id = 'maximize-label';
-  maximizeLabel.className = 'maximize-label';
   maximizeLabel.appendChild(document.createTextNode('Maximizar Player'));
 
   maximizeContainer.appendChild(maximizeBttn);
   maximizeContainer.appendChild(maximizeLabel);
 
-  minimizeContainer.id = 'minimize-container';
-  minimizeContainer.className = 'minimize-container';
  
-  minimizeBttn.id = 'minimize-bttn';
-  minimizeBttn.className = 'minimize-bttn bttn';
+
   minimizeBttn.onclick = () => {
-    tutorialContainer.style.width = '20%';
-    tutorialContainer.style.height = '40%';
-    tutorialContainer.style.top = '30%';
-    tutorialContainer.style.left = '15%';
+    tutorialContainer.className = tutorialContainer.className.replace(' minimize', ' maximize');
 
     document.getElementById('tutorial-player').style.height = '85%';
     document.getElementById('progress-video').style.bottom = '167px';
@@ -414,19 +352,14 @@ const renderTutorial  = () => {
     tutorialActions.appendChild(maximizeContainer)
     tutorialActions.appendChild(closeContainer)
   }
- 
-  minimizeLabel.id = 'minimize-label';
-  minimizeLabel.className = 'minimize-label';
+
   minimizeLabel.appendChild(document.createTextNode('Reduzir Player'));
 
   minimizeContainer.appendChild(minimizeBttn);
   minimizeContainer.appendChild(minimizeLabel);
-  
-  closeContainer.id = 'close-container';
-  closeContainer.className = 'close-container';
+
  
-  closeBttn.id = 'close-bttn-video';
-  closeBttn.className = 'close-bttn-video bttn';
+
   closeBttn.onclick = () => {
     const helpBttn = document.getElementById('help-bttn');
     helpBttn.className = helpBttn.className.replace(' active', '');
@@ -434,8 +367,7 @@ const renderTutorial  = () => {
     playerUI.removeChild(tutorialContainer)
   };
 
-  closeLabel.id = 'close-label';
-  closeLabel.className = 'close-label';
+
   closeLabel.appendChild(document.createTextNode('Fechar Player'));
 
   closeContainer.appendChild(closeBttn);
@@ -499,23 +431,16 @@ function parse(event) {
 }
 
 const renderRPM  = () => {
-  const iframeContainer = document.createElement('div');
-  const iframe = document.createElement('iframe')
+  const iframeContainer = genericCreateElement('div', 'iframe-container', 'iframe-container');
+  const iframe = genericCreateElement('iframe', 'rpm-iframe', 'rpm-iframe');
+  const closeIframe = genericCreateElement('button', 'close-frame-bttn', 'close-frame-bttn bttn');
 
-  iframeContainer.id = 'iframe-container';
-  iframeContainer.className = 'iframe-container';
-  
   iframe.src = 'https://agriland.readyplayer.me/avatar?frameApi&bodyType=fullbody';
-  iframe.id = 'rpm-iframe';
-  iframe.className ='rpm-iframe'
   iframe.sandbox= "allow-forms allow-scripts allow-same-origin";
   iframe.allow= "camera; microphone; geolocation; autoplay; fullscreen; encrypted-media; picture-in-picture";
   
-  const closeIframe = document.createElement('button');
   closeIframe.appendChild(document.createTextNode('X'));
   closeIframe.onclick = () => playerUI.removeChild(iframeContainer);
-  closeIframe.id = 'close-frame-bttn';
-  closeIframe.className = 'close-frame-bttn bttn'
   
   iframeContainer.appendChild(closeIframe);
   iframeContainer.appendChild(iframe)
@@ -534,16 +459,14 @@ const serverLogin = () => {
 }
 
 const renderSchedule = async data => {
-  const headerModal = document.createElement('p');
-  headerModal.id = 'header-modal-schedule';
-  headerModal.className = 'header-modal-schedule';
-  headerModal.appendChild(document.createTextNode('AGENDA'));
-
   const playerUI = document.getElementById('playerUI');
-  const scheduleContainer = document.createElement('div');
-
-  scheduleContainer.id = 'schedule-container';
-  scheduleContainer.className = 'schedule-container';
+  
+  const scheduleContainer = genericCreateElement('div', 'schedule-container', 'schedule-container');
+  const backPlate = genericCreateElement('div', 'back-plate-schedule', 'back-plate-schedule');
+  const headerModal = genericCreateElement('p', 'header-modal-schedule', 'header-modal-schedule');
+  const wrapperRow = genericCreateElement('div', 'wrapper-row', 'wrapper-row');
+  
+  headerModal.appendChild(document.createTextNode('AGENDA'));
 
   scheduleContainer.appendChild(headerModal);
 
@@ -551,49 +474,30 @@ const renderSchedule = async data => {
 
   scheduleContainer.appendChild(loading);
 
-  const backPlate = document.createElement('div');
-  backPlate.id = 'back-plate-schedule';
-  backPlate.className = 'back-plate-schedule';
-
   backPlate.appendChild(scheduleContainer);
 
   playerUI.appendChild(backPlate);
 
   const list = await fetchList();
 
-  const wrapperRow = document.createElement('div');
-  wrapperRow.id = 'wrapper-row';
-  wrapperRow.className = 'wrapper-row';
-
   if (list.length > 0) {
     for (let el of list) {
       const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${el.startAt.hour}:${el.startAt.minute}`;
       const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${el.endAt.hour}:${el.endAt.minute}`;
       const eventMoment = `${startAtContent} | ${endAtContent}`;
-      const eventName = el.eventName;
+      // const eventName = el.eventName;
       const eventPlace = el.placeName;
   
-      const row = document.createElement('div');
-      row.id = 'row-schedule';
-      row.className = 'row-schedule';
+      const row = genericCreateElement('div', 'row-schedule', 'row-schedule');
+      
+      const rowHeader = genericCreateElement('p', 'row-header-schedule', 'row-header-schedule');
   
-      const rowHeader = document.createElement('p');
-      rowHeader.id = 'row-header-schedule';
-      rowHeader.className = 'row-header-schedule';
-      rowHeader.appendChild(document.createTextNode(eventName));
-  
-      const rowInfos = document.createElement('div');
-      rowInfos.id = 'row-infos-schedule';
-      rowInfos.className = 'row-infos-schedule';
-  
-      const eventPlaceText = document.createElement('p');
-      eventPlaceText.id = 'event-place-text';
-      eventPlaceText.className = 'event-place-text';
+      const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule');
+      
+      const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text');
       eventPlaceText.appendChild(document.createTextNode(eventPlace));
   
-      const eventMomentText = document.createElement('p');
-      eventMomentText.id = 'event-moment-text';
-      eventMomentText.className = 'event-moment-text';
+      const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
       eventMomentText.appendChild(document.createTextNode(eventMoment))
   
       rowInfos.appendChild(eventPlaceText);
@@ -605,15 +509,11 @@ const renderSchedule = async data => {
       wrapperRow.appendChild(row);
     }
   } else {
-    const notFoundText = document.createElement('p');
+    const notFoundText = genericCreateElement('p', 'not-fount-text', 'not-fount-text');
     notFoundText.appendChild(document.createTextNode('Não foram encontrados eventos.'));
-    notFoundText.id = 'not-found-text';
-    notFoundText.className = 'not-found-text';
-
 
     wrapperRow.appendChild(notFoundText)
   }
-
 
   scheduleContainer.removeChild(loading);
 
@@ -624,32 +524,22 @@ const renderChat = (chatNameText) => {
   const playerUI = document.getElementById('playerUI');
   const chatBttn = document.getElementById('chat-bttn');
 
-  const displayChat = document.createElement('div');
-  displayChat.id = 'display-chat';
-  displayChat.className = 'display-chat';
+  const displayChat = genericCreateElement('div', 'display-chat', 'display-chat');
 
-  const inputChat = document.createElement('input');
-  inputChat.id = 'input-chat';
-  inputChat.className = 'input-chat';
+  const inputChat = genericCreateElement('input', 'input-chat', 'input-chat');
   inputChat.placeholder = "Pressione 'Enter' para interagir com o chat";
   
-  const closeChat = document.createElement('button');
-  closeChat.id = 'close-chat-bttn';
-  closeChat.className = 'close-chat-bttn bttn';
+  const closeChat = genericCreateElement('button', 'close-chat-bttn', 'close-chat-bttn bttn');
   closeChat.appendChild(document.createTextNode(''));
 
-  const chatContainer = document.createElement('div');
-  chatContainer.id = 'container-chat';
-  chatContainer.className = 'container-chat';
+  const chatContainer = genericCreateElement('div', 'container-chat', 'container-chat');
 
   closeChat.onclick = () => {
     chatBttn.style.visibility = 'visible';
     playerUI.removeChild(chatContainer);
   };
 
-  const chatName = document.createElement('p');
-  chatName.id = 'chat-name';
-  chatName.className = 'chat-name';
+  const chatName = genericCreateElement('p', 'chat-name', 'chat-name');
   chatName.appendChild(document.createTextNode(`Chat ${chatNameText}`));
 
   chatContainer.appendChild(chatName);
@@ -662,19 +552,13 @@ const renderChat = (chatNameText) => {
       const value = inputChat.value;
 
       if (value !== '') {
-        const user = document.createElement('p');
+        const user = genericCreateElement('p', 'user-message', 'user-message');
         user.appendChild(document.createTextNode(`${userData.userData.name} ${userData.userData.lastName}:`));
-        user.id = 'user-message';
-        user.className = 'user-message';
   
-        const message = document.createElement('p');
+        const message = genericCreateElement('p', 'text-message', 'text-message');
         message.appendChild(document.createTextNode(`${value}`));
-        message.id = 'text-message';
-        message.className = 'text-message';
   
-        const messageContainer = document.createElement('div');
-        messageContainer.id = 'message-container';
-        messageContainer.className = 'message-container';
+        const messageContainer = genericCreateElement('div', 'message-container', 'message-container');
   
         messageContainer.appendChild(user);
         messageContainer.appendChild(message);
@@ -701,9 +585,7 @@ const renderHud = () => {
 
   const createButton = (id, className, onClick, content) => {
     let activeBttn = true;
-    const button = document.createElement('button');
-    button.className = className;
-    button.id = id;
+    const button = genericCreateElement('button', id , className);
 
     button.onclick = () => {
       button.className = `${className}${activeBttn ? ' active' : ''}`
@@ -848,12 +730,9 @@ const renderHud = () => {
     ''
   );
 
-  const sideLeftBar = document.createElement('div');
-  sideLeftBar.className ='side-left-bar';
-  sideLeftBar.id ='side-left-bar';
+  const sideLeftBar = genericCreateElement('div', 'side-left-bar', 'side-left-bar');
 
-  const topSideBar = document.createElement('div');
-  topSideBar.className = 'top-side-bar';
+  const topSideBar = genericCreateElement('div', 'top-side-bar', 'top-side-bar');
 
   const topSideBarElements = [
     avatarBttn,
@@ -875,14 +754,12 @@ const renderHud = () => {
 
 const render = () => {
   const loading = () => {
-    const mother = document.createElement("div");
-    mother.id = "loading";
-    mother.className = "lds-ellipsis";
+    const mother = genericCreateElement("div", 'loading', 'lds-ellipsis');
 
-    const one = document.createElement("div");
-    const two = document.createElement("div");
-    const three = document.createElement("div");
-    const four = document.createElement("div");
+    const one = genericCreateElement("div", '', '');
+    const two = genericCreateElement("div", '', '');
+    const three = genericCreateElement("div", '', '');
+    const four = genericCreateElement("div", '', '');
 
     mother.appendChild(one);
     mother.appendChild(two);
@@ -892,31 +769,22 @@ const render = () => {
     return mother;
   }
 
-  const createDivider = (className) => {
-    const div = document.createElement("div");
-
-    div.className = className;
-
-    return div;
-  };
+  const createDivider = (className) => genericCreateElement("div", '', className);
 
   const baseUrl = "https://admin-brasilagriland.com.br/services";
   // const baseUrl = "http://localhost:3090";
   
   const createInput = (id, className, labelText, type) => {
-    const input = document.createElement("input");
-    const label = document.createElement("label");
+    const input = genericCreateElement("input", id, '');
+    const label = genericCreateElement("label", '', '');
     
-    input.id = id;
     input.type = type;
     
     label.for = id;
     
     label.appendChild(document.createTextNode(labelText));
   
-    const div = document.createElement("div");
-
-    div.className = className;
+    const div = genericCreateElement("div", '', className);
       
     div.appendChild(label);
     div.appendChild(input);
@@ -925,20 +793,16 @@ const render = () => {
   };
 
   const createButton = (className, onClick, buttonText) => {
-    const button = document.createElement("button");
+    const button = genericCreateElement("button", className, className);
     button.appendChild(document.createTextNode(buttonText));
-  
-    button.className = className;
 
-    button.id = className;
-  
     button.onclick = onClick;
   
     return button;
   }
 
   const createTitle = (text) => {
-    const title = document.createElement("h1");
+    const title = genericCreateElement("h1", '', '');
     title.style.color = "#dcdc01";
     title.appendChild(document.createTextNode(text));
     return title;
@@ -958,8 +822,7 @@ const render = () => {
 
   const passwordInput = createInput("password", "password-input", "Senha", "password");
 
-  const alert = document.createElement("div");
-  alert.id = "alert";
+  const alert = genericCreateElement("div", 'alert', '');
 
   const onSubmit = async () => {
     const alertContainer = document.getElementById("alert");
@@ -1048,18 +911,11 @@ const render = () => {
 
   const buttonForget = createButton("button-forget", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
 
-  const card = document.createElement("div");
-  
-  card.className = "card-login";
+  const card = genericCreateElement("div", "card-login", "card-login");
 
-  card.id = "card-login";
+  const footerCard = genericCreateElement("div", "footer-login", "footer-login");
 
-  const footerCard = document.createElement("div");
-
-  footerCard.className = "footer-login";
-
-  const submitContainer = document.createElement("div");
-  submitContainer.id = "submit-container";
+  const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
   submitContainer.appendChild(buttonSubmit);
 
   appendChilds(footerCard, [buttonRegister, dividerFooter, buttonForget]);

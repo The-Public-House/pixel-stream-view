@@ -12,6 +12,11 @@ body {
   font-family: sans-serif;
 }
 
+#playerUI {
+  width: 100%;
+  height: 100%;
+}
+
 #root {
   width: 100%;
   height: 100%;
@@ -530,19 +535,29 @@ body {
 .close-schedule-bttn {
   width: 25px;
   position: absolute;
+  border-top-right-radius: 2%;
 }
 
 .close-frame-bttn {
   position: absolute;
   top: 0px;
   right: 0px;
+  background: transparent;
+  width: 31px;
+  height: 27px;
+  border-color: transparent;
+}
+
+.close-frame-bttn:hover {
+  color: #dcdc01;
 }
 
 .rpm-iframe {
-  width: 95.9%;
+  width: 100%;
   height: 100%;
 
   border: none;
+  border-radius: 2%;
 }
 
 .iframe-container {
@@ -576,9 +591,19 @@ body {
   width: 70%;
   height: 93%;
   position: absolute;
+}
+
+.tutorial-container.maximize {
   top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.tutorial-container.minimize {
+  width: 20%;
+  height: 40%;
+  bottom: 0%;
+  left: 15%;
 }
 
 .tutorial-player {
