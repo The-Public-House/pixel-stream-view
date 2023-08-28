@@ -315,6 +315,7 @@ const onSubmit = async () => {
 // Start Renders Sections
 const renderQuit = () => {
   const playerUI = document.getElementById('playerUI');
+
   const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'close-bttn-quit bttn');
   const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
   const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
@@ -760,24 +761,7 @@ const renderHud = () => {
     }
   );
 
-  const emit = name => emitUIInteraction({ name });
-
-  const buttons = [
-    {
-      id: 'schedule-bttn',
-      className: 'schedule-bttn bttn',
-      onClick: () => {
-        if (modalStates['schedule-bttn']) {
-          modalStates['schedule-bttn'] = false;
-          renderSchedule();
-        } else {
-          modalStates['schedule-bttn'] = true;
-          const playerUI = document.getElementById('playerUI');
-          playerUI.removeChild(document.getElementById('back-plate-schedule'));
-        }
-      }
-    },
-    ,
+  const buttons = [ 
     {
       id: 'avatar-bttn',
       className: 'avatar-bttn bttn',
@@ -797,7 +781,21 @@ const renderHud = () => {
       id: 'map-bttn',
       className: 'map-bttn bttn',
       onClick: () => {
-        emit('openMap');
+        console.log('openMap');
+      }
+    },
+    {
+      id: 'schedule-bttn',
+      className: 'schedule-bttn bttn',
+      onClick: () => {
+        if (modalStates['schedule-bttn']) {
+          modalStates['schedule-bttn'] = false;
+          renderSchedule();
+        } else {
+          modalStates['schedule-bttn'] = true;
+          const playerUI = document.getElementById('playerUI');
+          playerUI.removeChild(document.getElementById('back-plate-schedule'));
+        }
       }
     },
     {
@@ -818,7 +816,7 @@ const renderHud = () => {
     {
       id: 'sound-bttn',
       className: 'sound-bttn bttn',
-      onClick: () => emit('sound')
+      onClick: () => console.log('sound')
     },
     {
       id: 'logout-bttn',
@@ -837,22 +835,20 @@ const renderHud = () => {
   ];
   
   buttons.forEach(value => {
-    const topSideBarIncludes = ['avatar-bttn', 'map-bttn', 'schedule-bttn', 'controls-bttn', 'sound-bttn', 'logout-bttn']
-    if (topSideBarIncludes.includes(value.id)) {
+    if (['avatar-bttn', 'map-bttn', 'schedule-bttn', 'controls-bttn', 'sound-bttn', 'logout-bttn'].includes(value.id))
       topSideBar.appendChild(createButton(value.id, value.className, value.onClick))
-    }
   });
-
-  if (userData.rpmLink) {
-    const avatarBttn = document.getElementById('avatar-bttn')
-    if (avatarBttn) avatarBttn.style.backgroundImage = `url("${(userData.rpmLink).replace('.glb', '.png')}")`;
-  }
 
   for (let el of [topSideBar, chatBttn]) sideLeftBar.appendChild(el);
   
   const hudElements = [sideLeftBar, helpBttn];
 
   for (let hudElement of hudElements) playerUI.appendChild(hudElement);
+
+  if (userData.rpmLink) {
+    const avatarBttn = document.getElementById('avatar-bttn');
+    if (avatarBttn) avatarBttn.style.backgroundImage = `url("${(userData.rpmLink).replace('.glb', '.png')}")`;
+  }
 };
 
 const render = () => {
