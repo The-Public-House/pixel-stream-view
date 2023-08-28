@@ -1,14 +1,3 @@
-// Start Utils Sections
-const genericCreateElement = (type, id, className) => {
-  const element = document.createElement(type)
-  element.className = className;
-  element.id = id;
-
-  return element;
-};
-
-// End Utils Sections
-
 // Start Variables Sections
 let userData;
 
@@ -29,8 +18,18 @@ const modalsContainers = {
   'chat-bttn': 'container-chat',
   'logout-bttn': 'wrapper-modal-quit', 
 };
+
+const baseUrl = "https://admin-brasilagriland.com.br/services";
 // End Variables Sections
 
+// Start Utils Sections
+const genericCreateElement = (type, id, className) => {
+  const element = document.createElement(type)
+  element.className = className;
+  element.id = id;
+
+  return element;
+};
 
 const circleLoadder = () => {
   const container = document.createElement('div');
@@ -101,10 +100,230 @@ async function fetchList() {
 
 const emitUIInteraction = value => console.log(value);
 
-const renderQuit = () => {
+function subscribe(event) {
+  const frame = document.getElementById('rpm-iframe');
+  const json = parse(event);
+
+  if (json?.source !== 'readyplayerme') {
+    return;
+  }
+
+  if (json.eventName === 'v1.frame.ready') {
+    frame.contentWindow.postMessage(
+      JSON.stringify({
+        target: 'readyplayerme',
+        type: 'subscribe',
+        eventName: 'v1.**'
+      }),
+      '*'
+    );
+  }
+
+  if (json.eventName === 'v1.avatar.exported') {
+    const avatarBttn = document.getElementById('avatar-bttn');
+    avatarBttn.style.backgroundImage = `url("${(json.data.url).replace('.glb', '.png')}")`;
+
+    const data = {
+      id: userData.rpmId,
+      link: json.data.url,
+    };
+
+    updateAvatar(data);
+    
+    const iframeContaienr = document.getElementById('iframe-container');
+    const playerUI = document.getElementById('playerUI');
+    playerUI.removeChild(iframeContaienr);
+  }
+
+  if (json.eventName === 'v1.user.set') {
+    console.log(`User with id ${json.data.id} set: ${JSON.stringify(json)}`);
+  }
+}
+
+function parse(event) {
+  try {
+      return JSON.parse(event.data);
+  } catch (error) {
+      return null;
+  }
+}
+
+const serverLogin = () => {
+  const root = document.getElementById('root');
   const playerUI = document.getElementById('playerUI');
 
+  root.style.display = "none";
+  playerUI.style.visibility = "visible";
+}
+
+const createButton = (id, className, onClick) => {
+  const playerUI = document.getElementById('playerUI');
+  let activeBttn = true;
+  const button = genericCreateElement('button', id , className);
+
+  button.onclick = () => {
+    button.className = `${className}${activeBttn ? ' active' : ''}`
+    activeBttn = !activeBttn;
+
+    const state = modalStates[`${id}`];
+    if (state) {
+      const states = Object.entries(modalStates).filter(value => value[0] !== id);
+
+      states.forEach(value => {
+        const el = document.getElementById(modalsContainers[value[0]]);
+        if (el) {
+          playerUI.removeChild(el);
+          const bttn = document.getElementById(value[0]);
+          bttn.className = bttn.className.replace(' active', '');
+        }
+      });
+    }
+
+    onClick();
+  };
+
+  return button;
+};
+
+const createInput = (id, className, labelText, type) => {
+  const input = genericCreateElement("input", id, '');
+  const label = genericCreateElement("label", '', '');
+  
+  
+  input.type = type;
+  
+  label.for = id;
+  
+  label.appendChild(document.createTextNode(labelText));
+
+  const div = genericCreateElement("div", '', className);
+    
+  div.appendChild(label);
+  div.appendChild(input);
+
+  return div;
+};
+
+const createButtonWithText = (className, onClick, buttonText) => {
+  const button = genericCreateElement("button", className, className);
+  button.appendChild(document.createTextNode(buttonText));
+
+  button.onclick = onClick;
+
+  return button;
+}
+
+const createTitle = (text) => {
+  const title = genericCreateElement("h1", '', '');
+  title.style.color = "#dcdc01";
+  title.appendChild(document.createTextNode(text));
+  return title;
+};
+
+const createDivider = (className) => genericCreateElement("div", '', className);
+
+const loading = () => {
+  const mother = genericCreateElement("div", 'loading', 'lds-ellipsis');
+
+  const one = genericCreateElement("div", '', '');
+  const two = genericCreateElement("div", '', '');
+  const three = genericCreateElement("div", '', '');
+  const four = genericCreateElement("div", '', '');
+
+  mother.appendChild(one);
+  mother.appendChild(two);
+  mother.appendChild(three);
+  mother.appendChild(four);
+
+  return mother;
+}
+
+const onSubmit = async () => {
+  const alertContainer = document.getElementById("alert");
+  alertContainer.innerHTML = "";
+
+  const bttnSubmit = createButton("button-signin", onSubmit, "ENTRAR");
+  const submitContainer = document.getElementById("submit-container")
+  const animationLoading = loading();
+  
+  submitContainer.removeChild(document.getElementById('button-signin'));
+  submitContainer.appendChild(animationLoading);
+  
+  try {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+       
+    const data = { email, password };
+
+    var request = new XMLHttpRequest(); 
+    request.open('POST', `${baseUrl}/unreal/signin`, true);
+    request.setRequestHeader('Content-Type', 'application/json');
+
+    request.onload = function() {
+      if (request.status >= 200 && request.status < 400) {
+        var data = JSON.parse(request.responseText);
+
+        if (data.data) {
+          const emitData = {
+            name: "login",
+            value: data.data
+          };
+            
+          // emitUIInteraction(emitData);
+          userData = data.data;
+          serverLogin();
+          renderHud();
+        } else if (!data.hasVerified && data.success) {
+          let url = new URL("verify.html", window.location.href);
+          url.searchParams.set("email", email);
+          console.log(url);
+          window.location.replace(url.href);
+        } else if (!data.success)  {
+          submitContainer.removeChild(animationLoading);
+          submitContainer.appendChild(bttnSubmit);
+
+          alertContainer.innerHTML = `<p>Email ou senha estão incorretos</p>`;
+        }
+      } else {
+        console.log("aqui");
+        submitContainer.removeChild(animationLoading);
+        submitContainer.appendChild(bttnSubmit);
+
+        console.error('Erro na requisição. Status:', request.status);
+      }
+    };
+
+    request.onerror = function() {
+      console.log("aqui2");
+      submitContainer.removeChild(animationLoading);
+      submitContainer.appendChild(bttnSubmit);
+
+      console.error('Erro na requisição.');
+    };
+
+    request.send(JSON.stringify(data));
+  } catch(err) {
+    console.log("aqui3");
+    submitContainer.removeChild(animationLoading);
+    submitContainer.appendChild(bttnSubmit);
+
+    console.log(err);
+  }
+};
+// End Utils Sections
+
+// Start Renders Sections
+const renderQuit = () => {
+  const playerUI = document.getElementById('playerUI');
   const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'close-bttn-quit bttn');
+  const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
+  const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
+  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container')
+  const header = genericCreateElement('p', 'header-quit', 'header-quit');
+  const text = genericCreateElement('p', 'text-quit', 'text-quit');
+  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit');
+  const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'wrapper-modal-quit');
+
   closeBttn.appendChild(document.createTextNode('X'));
   closeBttn.onclick = () => {
     modalStates['logout-bttn'] = true;
@@ -113,7 +332,6 @@ const renderQuit = () => {
     bttn.className = bttn.className.replace(' active', '');
   };
 
-  const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
   quitBttn.onclick = () => {
     playerUI.removeChild(document.getElementById('wrapper-modal-quit'));
     playerUI.removeChild(document.getElementById('help-bttn'));
@@ -134,23 +352,14 @@ const renderQuit = () => {
     
     render();
   };
-
-  const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
+ 
   quitBttnLabel.appendChild(document.createTextNode('Sair'));
-
-  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container')
 
   for (const el of [quitBttn, quitBttnLabel]) quitBttnContainer.appendChild(el);
 
-  const header = genericCreateElement('p', 'header-quit', 'header-quit');
   header.appendChild(document.createTextNode('Logout'));
 
-  const text = genericCreateElement('p', 'text-quit', 'text-quit');
   text.appendChild(document.createTextNode('Deseja realmente sair de Agriland?'));
-
-  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit');
-
-  const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'wrapper-modal-quit');
 
   for (const el of [header, text, quitBttnContainer]) contentModal.appendChild(el);
 
@@ -163,14 +372,14 @@ const renderControlls = () => {
   const playerUI = document.getElementById('playerUI');
 
   const backPlate = genericCreateElement('div', 'back-plate-controll', 'back-plate-controll');
-
   const controllContainer = genericCreateElement('div', 'controll-container', 'controll-container');
-
   const headerControll = genericCreateElement('p', 'header-controll', 'header-controll');
+  const controlls = genericCreateElement('div', 'controlls', 'controlls');
+  const leftContainer = genericCreateElement('div', 'left-container-controll', 'left-container-controll side-container-controll');
+  const rightContainer = genericCreateElement('div', 'right-container-controll', 'right-container-controll side-container-controll');
+
   headerControll.appendChild(document.createTextNode('COMANDOS'));
 
-  const controlls = genericCreateElement('div', 'controlls', 'controlls');
-  
   const createControllHelper = (name, content, text) => {
     const variableControll = genericCreateElement('p', `${name}-controll`, `${name}-controll button-controll`);
     variableControll.appendChild(document.createTextNode(content))
@@ -193,15 +402,7 @@ const renderControlls = () => {
   const rightControllContainer = createControllHelper('right', 'D', 'direita');
   const downControllContainer = createControllHelper('down', 'S', 'trás');
 
-  const leftContainer = document.createElement('div');
-  leftContainer.id = 'left-container-controll';
-  leftContainer.className = 'left-container-controll side-container-controll';
-
   for (const el of [upControllContainer, leftControllContainer, rightControllContainer, downControllContainer]) leftContainer.appendChild(el);
-
-  const rightContainer = document.createElement('div');
-  rightContainer.id = 'right-container-controll';
-  rightContainer.className = 'right-container-controll side-container-controll';
 
   const cameraControllContainer = createControllHelper('camera', 'V', 'alternar câmera');
   const jumpControllContainer = createControllHelper('jump', 'Barra de Espaço',  'saltar');
@@ -220,7 +421,9 @@ const renderControlls = () => {
 
 const renderTutorial  = () => {
   let playVideo = false;
+
   const playerUI = document.getElementById('playerUI');
+  
   const playBttn = genericCreateElement('button', 'play-bttn', 'play-bttn bttn active');
   const maximizeBttn = genericCreateElement('button', 'maximize-bttn', 'maximize-bttn bttn');
   const minimizeBttn = genericCreateElement('button', 'minimize-bttn', 'minimize-bttn bttn');
@@ -382,54 +585,6 @@ const renderTutorial  = () => {
   playerUI.appendChild(tutorialContainer);
 };
 
-function subscribe(event) {
-  const frame = document.getElementById('rpm-iframe');
-  const json = parse(event);
-
-  if (json?.source !== 'readyplayerme') {
-    return;
-  }
-
-  if (json.eventName === 'v1.frame.ready') {
-    frame.contentWindow.postMessage(
-      JSON.stringify({
-        target: 'readyplayerme',
-        type: 'subscribe',
-        eventName: 'v1.**'
-      }),
-      '*'
-    );
-  }
-
-  if (json.eventName === 'v1.avatar.exported') {
-    const avatarBttn = document.getElementById('avatar-bttn');
-    avatarBttn.style.backgroundImage = `url("${(json.data.url).replace('.glb', '.png')}")`;
-
-    const data = {
-      id: userData.rpmId,
-      link: json.data.url,
-    };
-
-    updateAvatar(data);
-    
-    const iframeContaienr = document.getElementById('iframe-container');
-    const playerUI = document.getElementById('playerUI');
-    playerUI.removeChild(iframeContaienr);
-  }
-
-  if (json.eventName === 'v1.user.set') {
-    console.log(`User with id ${json.data.id} set: ${JSON.stringify(json)}`);
-  }
-}
-
-function parse(event) {
-  try {
-      return JSON.parse(event.data);
-  } catch (error) {
-      return null;
-  }
-}
-
 const renderRPM  = () => {
   const iframeContainer = genericCreateElement('div', 'iframe-container', 'iframe-container');
   const iframe = genericCreateElement('iframe', 'rpm-iframe', 'rpm-iframe');
@@ -448,14 +603,6 @@ const renderRPM  = () => {
   playerUI.appendChild(iframeContainer);
   window.addEventListener('message', subscribe);
   document.addEventListener('message', subscribe);
-}
-
-const serverLogin = () => {
-  const root = document.getElementById('root');
-  const playerUI = document.getElementById('playerUI');
-
-  root.style.display = "none";
-  playerUI.style.visibility = "visible";
 }
 
 const renderSchedule = async data => {
@@ -489,15 +636,13 @@ const renderSchedule = async data => {
       const eventPlace = el.placeName;
   
       const row = genericCreateElement('div', 'row-schedule', 'row-schedule');
-      
       const rowHeader = genericCreateElement('p', 'row-header-schedule', 'row-header-schedule');
-  
       const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule');
-      
       const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text');
+      const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
+      
       eventPlaceText.appendChild(document.createTextNode(eventPlace));
   
-      const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
       eventMomentText.appendChild(document.createTextNode(eventMoment))
   
       rowInfos.appendChild(eventPlaceText);
@@ -553,13 +698,13 @@ const renderChat = (chatNameText) => {
 
       if (value !== '') {
         const user = genericCreateElement('p', 'user-message', 'user-message');
+        const message = genericCreateElement('p', 'text-message', 'text-message');
+        const messageContainer = genericCreateElement('div', 'message-container', 'message-container');
+        
         user.appendChild(document.createTextNode(`${userData.userData.name} ${userData.userData.lastName}:`));
   
-        const message = genericCreateElement('p', 'text-message', 'text-message');
         message.appendChild(document.createTextNode(`${value}`));
-  
-        const messageContainer = genericCreateElement('div', 'message-container', 'message-container');
-  
+        
         messageContainer.appendChild(user);
         messageContainer.appendChild(message);
   
@@ -581,139 +726,9 @@ const renderChat = (chatNameText) => {
 const renderHud = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const baseUrl = "https://admin-brasilagriland.com.br/hub/auth/schedule";
-
-  const createButton = (id, className, onClick, content) => {
-    let activeBttn = true;
-    const button = genericCreateElement('button', id , className);
-
-    button.onclick = () => {
-      button.className = `${className}${activeBttn ? ' active' : ''}`
-      activeBttn = !activeBttn;
-
-      const state = modalStates[`${id}`];
-      if (state) {
-        const states = Object.entries(modalStates).filter(value => value[0] !== id);
-
-        states.forEach(value => {
-          const el = document.getElementById(modalsContainers[value[0]]);
-          if (el) {
-            playerUI.removeChild(el);
-            const bttn = document.getElementById(value[0]);
-            bttn.className = bttn.className.replace(' active', '');
-          }
-        });
-      }
-
-      onClick();
-    };
-
-    button.appendChild(document.createTextNode(content));
-
-    return button;
-  };
-
-  const emit = name => emitUIInteraction({ name });
-
-  const scheduleBttn = createButton(
-    'schedule-bttn',
-    'schedule-bttn bttn',
-    () => {
-      if (modalStates['schedule-bttn']) {
-        modalStates['schedule-bttn'] = false;
-        renderSchedule();
-      } else {
-        modalStates['schedule-bttn'] = true;
-        const playerUI = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById('back-plate-schedule'));
-      }
-    },
-    ''
-  );
-
-  const helpBttn = createButton(
-    'help-bttn',
-    'help-bttn bttn',
-    () => {
-      if (modalStates['help-bttn']) {
-        modalStates['help-bttn'] = false;
-        renderTutorial();
-      } else {
-        modalStates['help-bttn'] = true;
-        const helpContainer = document.getElementById('tutorial-container');
-        playerUI.removeChild(helpContainer);
-      }
-    },
-    ''
-  );
-
-  const avatarBttn = createButton(
-    'avatar-bttn',
-    'avatar-bttn bttn',
-    () => {
-      if (modalStates['avatar-bttn']) {
-        modalStates['avatar-bttn'] = false;
-        renderRPM();
-      } else {
-        modalStates['avatar-bttn'] = true;
-        const iframeContainer = document.getElementById('iframe-container');
-        playerUI.removeChild(iframeContainer);
-      }
-    },
-    ''
-  );
-
-  if (userData.rpmLink) avatarBttn.style.backgroundImage = `url("${(userData.rpmLink).replace('.glb', '.png')}")`;
-
-  const mapBttn = createButton(
-    'map-bttn',
-    'map-bttn bttn',
-    () => {
-      emit('openMap');
-    },
-    ''
-  );
-
-  const controlsBttn = createButton(
-    'controls-bttn',
-    'controls-bttn bttn',
-    () => {
-      if (modalStates['controls-bttn']) {
-        modalStates['controls-bttn'] = false;
-        renderControlls();
-      }
-      else {
-        modalStates['controls-bttn'] = true;
-        const playerUI = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById('back-plate-controll'));
-      } 
-    },
-    ''
-  );
-
-  const soundBttn = createButton(
-    'sound-bttn',
-    'sound-bttn bttn',
-    () => emit('sound'),
-    ''
-  );
-
-  const logoutBttn = createButton(
-    'logout-bttn',
-    'logout-bttn bttn',
-    () => {
-      if (modalStates['logout-bttn']) {
-        modalStates['logout-bttn'] = false;
-        renderQuit();
-      } else {
-        modalStates['logout-bttn'] = true;
-        const playerUi = document.getElementById('playerUI');
-        playerUI.removeChild(document.getElementById('wrapper-modal-quit'))
-      }
-    },
-    ''
-  );
-
+  const sideLeftBar = genericCreateElement('div', 'side-left-bar', 'side-left-bar');
+  const topSideBar = genericCreateElement('div', 'top-side-bar', 'top-side-bar');
+  
   const chatBttn = createButton(
     'chat-bttn',
     'chat-bttn bttn',
@@ -723,27 +738,115 @@ const renderHud = () => {
         renderChat('local');
       } else {
         modalStates['chat-bttn'] - true;
-        const playerUi = document.getElementById('playerUI');
+        const playerUI = document.getElementById('playerUI');
         playerUI.removeChild(document.getElementById('container-chat'))
       }
-    },
-    ''
+    }
+  )
+  
+  const helpBttn = createButton(
+    'help-bttn',
+    'help-bttn bttn',
+    () => {
+      if (modalStates['help-bttn']) {
+        modalStates['help-bttn'] = false;
+        renderTutorial();
+      } else {
+        modalStates['help-bttn'] = true;
+        const playerUI = document.getElementById('playerUI');
+        const helpContainer = document.getElementById('tutorial-container');
+        playerUI.removeChild(helpContainer);
+      }
+    }
   );
 
-  const sideLeftBar = genericCreateElement('div', 'side-left-bar', 'side-left-bar');
+  const emit = name => emitUIInteraction({ name });
 
-  const topSideBar = genericCreateElement('div', 'top-side-bar', 'top-side-bar');
+  const buttons = [
+    {
+      id: 'schedule-bttn',
+      className: 'schedule-bttn bttn',
+      onClick: () => {
+        if (modalStates['schedule-bttn']) {
+          modalStates['schedule-bttn'] = false;
+          renderSchedule();
+        } else {
+          modalStates['schedule-bttn'] = true;
+          const playerUI = document.getElementById('playerUI');
+          playerUI.removeChild(document.getElementById('back-plate-schedule'));
+        }
+      }
+    },
+    ,
+    {
+      id: 'avatar-bttn',
+      className: 'avatar-bttn bttn',
+      onClick: () => {
+        if (modalStates['avatar-bttn']) {
+          modalStates['avatar-bttn'] = false;
+          renderRPM();
+        } else {
+          modalStates['avatar-bttn'] = true;
+          const playerUI = document.getElementById('playerUI');
+          const iframeContainer = document.getElementById('iframe-container');
+          playerUI.removeChild(iframeContainer);
+        }
+      }
+    },
+    {
+      id: 'map-bttn',
+      className: 'map-bttn bttn',
+      onClick: () => {
+        emit('openMap');
+      }
+    },
+    {
+      id: 'controls-bttn',
+      className: 'controls-bttn bttn',
+      onClick: () => {
+        if (modalStates['controls-bttn']) {
+          modalStates['controls-bttn'] = false;
+          renderControlls();
+        }
+        else {
+          modalStates['controls-bttn'] = true;
+          const playerUI = document.getElementById('playerUI');
+          playerUI.removeChild(document.getElementById('back-plate-controll'));
+        } 
+      }
+    },
+    {
+      id: 'sound-bttn',
+      className: 'sound-bttn bttn',
+      onClick: () => emit('sound')
+    },
+    {
+      id: 'logout-bttn',
+      className: 'logout-bttn bttn',
+      onClick: () => {
+        if (modalStates['logout-bttn']) {
+          modalStates['logout-bttn'] = false;
+          renderQuit();
+        } else {
+          modalStates['logout-bttn'] = true;
+          const playerUI = document.getElementById('playerUI');
+          playerUI.removeChild(document.getElementById('wrapper-modal-quit'))
+        }
+      }
+    },
+  ];
+  
+  buttons.forEach(value => {
+    const topSideBarIncludes = ['avatar-bttn', 'map-bttn', 'schedule-bttn', 'controls-bttn', 'sound-bttn', 'logout-bttn']
+    if (topSideBarIncludes.includes(value.id)) {
+      topSideBar.appendChild(createButton(value.id, value.className, value.onClick))
+    }
+  });
 
-  const topSideBarElements = [
-    avatarBttn,
-    mapBttn,
-    scheduleBttn,
-    controlsBttn,
-    soundBttn,
-    logoutBttn,
-  ]
-
-  for (let el of topSideBarElements) topSideBar.appendChild(el);
+  if (userData.rpmLink) {
+    const avatarBttn = document.getElementById('avatar-bttn')
+    if (avatarBttn) avatarBttn.style.backgroundImage = `url("${(userData.rpmLink).replace('.glb', '.png')}")`;
+  }
 
   for (let el of [topSideBar, chatBttn]) sideLeftBar.appendChild(el);
   
@@ -753,61 +856,22 @@ const renderHud = () => {
 };
 
 const render = () => {
-  const loading = () => {
-    const mother = genericCreateElement("div", 'loading', 'lds-ellipsis');
+  const dividerTop = createDivider('divider divider-top');
+  const dividerFooter = createDivider('divider-footer');
+  const dividerBottom = createDivider('divider divider-bottom');
+  const buttonSubmit = createButtonWithText("button-signin", onSubmit, "ENTRAR");
+  const buttonRegister = createButtonWithText("button-register", () => window.location.replace("register.html"), "Cadastre-se");
+  const buttonForget = createButtonWithText("button-forget", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
+  const card = genericCreateElement("div", "card-login", "card-login");
+  const footerCard = genericCreateElement("div", "footer-login", "footer-login");
+  const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
+  const title = createTitle("Login");
+  const emailInput = createInput("email", "email-input", "Usuário", "email");
+  const passwordInput = createInput("password", "password-input", "Senha", "password");
+  const alert = genericCreateElement("div", 'alert', '');
 
-    const one = genericCreateElement("div", '', '');
-    const two = genericCreateElement("div", '', '');
-    const three = genericCreateElement("div", '', '');
-    const four = genericCreateElement("div", '', '');
-
-    mother.appendChild(one);
-    mother.appendChild(two);
-    mother.appendChild(three);
-    mother.appendChild(four);
-
-    return mother;
-  }
-
-  const createDivider = (className) => genericCreateElement("div", '', className);
-
-  const baseUrl = "https://admin-brasilagriland.com.br/services";
   // const baseUrl = "http://localhost:3090";
   
-  const createInput = (id, className, labelText, type) => {
-    const input = genericCreateElement("input", id, '');
-    const label = genericCreateElement("label", '', '');
-    
-    input.type = type;
-    
-    label.for = id;
-    
-    label.appendChild(document.createTextNode(labelText));
-  
-    const div = genericCreateElement("div", '', className);
-      
-    div.appendChild(label);
-    div.appendChild(input);
-  
-    return div;
-  };
-
-  const createButton = (className, onClick, buttonText) => {
-    const button = genericCreateElement("button", className, className);
-    button.appendChild(document.createTextNode(buttonText));
-
-    button.onclick = onClick;
-  
-    return button;
-  }
-
-  const createTitle = (text) => {
-    const title = genericCreateElement("h1", '', '');
-    title.style.color = "#dcdc01";
-    title.appendChild(document.createTextNode(text));
-    return title;
-  };
-
   const appendChilds = (father, childs) => childs.forEach(value => father.appendChild(value));
 
   const root = document.getElementById('root');
@@ -816,106 +880,8 @@ const render = () => {
 
   playerUI.style.visibility = 'hidden';
 
-  const title = createTitle("Login");
-
-  const emailInput = createInput("email", "email-input", "Usuário", "email");
-
-  const passwordInput = createInput("password", "password-input", "Senha", "password");
-
-  const alert = genericCreateElement("div", 'alert', '');
-
-  const onSubmit = async () => {
-    const alertContainer = document.getElementById("alert");
-    alertContainer.innerHTML = "";
-
-    const bttnSubmit = createButton("button-signin", onSubmit, "ENTRAR");
-    const submitContainer = document.getElementById("submit-container")
-    const animationLoading = loading();
-    
-    submitContainer.removeChild(document.getElementById('button-signin'));
-    submitContainer.appendChild(animationLoading);
-    
-    try {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-         
-      const data = { email, password };
-
-      var request = new XMLHttpRequest(); 
-      request.open('POST', `${baseUrl}/unreal/signin`, true);
-      request.setRequestHeader('Content-Type', 'application/json');
-  
-      request.onload = function() {
-        if (request.status >= 200 && request.status < 400) {
-          var data = JSON.parse(request.responseText);
-
-          if (data.data) {
-            const emitData = {
-              name: "login",
-              value: data.data
-            };
-              
-            // emitUIInteraction(emitData);
-            userData = data.data;
-            serverLogin();
-            renderHud();
-          } else if (!data.hasVerified && data.success) {
-            let url = new URL("verify.html", window.location.href);
-            url.searchParams.set("email", email);
-            console.log(url);
-            window.location.replace(url.href);
-          } else if (!data.success)  {
-            submitContainer.removeChild(animationLoading);
-            submitContainer.appendChild(bttnSubmit);
-
-            alertContainer.innerHTML = `<p>Email ou senha estão incorretos</p>`;
-          }
-        } else {
-          console.log("aqui");
-          submitContainer.removeChild(animationLoading);
-          submitContainer.appendChild(bttnSubmit);
-
-          console.error('Erro na requisição. Status:', request.status);
-        }
-      };
-  
-      request.onerror = function() {
-        console.log("aqui2");
-        submitContainer.removeChild(animationLoading);
-        submitContainer.appendChild(bttnSubmit);
-
-        console.error('Erro na requisição.');
-      };
-  
-      request.send(JSON.stringify(data));
-    } catch(err) {
-      console.log("aqui3");
-      submitContainer.removeChild(animationLoading);
-      submitContainer.appendChild(bttnSubmit);
-
-      console.log(err);
-    }
-  };
-
   // teste = false;
 
-  const dividerTop = createDivider('divider divider-top');
-
-  const dividerFooter = createDivider('divider-footer');
-  
-  const dividerBottom = createDivider('divider divider-bottom');
-   
-  const buttonSubmit = createButton("button-signin", onSubmit, "ENTRAR");
-
-  const buttonRegister = createButton("button-register", () => window.location.replace("register.html"), "Cadastre-se");
-
-  const buttonForget = createButton("button-forget", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
-
-  const card = genericCreateElement("div", "card-login", "card-login");
-
-  const footerCard = genericCreateElement("div", "footer-login", "footer-login");
-
-  const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
   submitContainer.appendChild(buttonSubmit);
 
   appendChilds(footerCard, [buttonRegister, dividerFooter, buttonForget]);
@@ -936,7 +902,6 @@ const render = () => {
   root.style.position = 'absolute';
   root.style.zIndex = "1";
 };
+// End Renders Sections
 
 document.addEventListener("DOMContentLoaded", () => render());
-
-
