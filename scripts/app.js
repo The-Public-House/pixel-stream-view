@@ -596,7 +596,11 @@ const renderRPM  = () => {
   iframe.allow= "camera; microphone; geolocation; autoplay; fullscreen; encrypted-media; picture-in-picture";
   
   closeIframe.appendChild(document.createTextNode('X'));
-  closeIframe.onclick = () => playerUI.removeChild(iframeContainer);
+  closeIframe.onclick = () => {
+    modalStates['avatar-bttn'] = true;
+    const playerUI = document.getElementById('playerUI');
+    playerUI.removeChild(iframeContainer);
+  };
   
   iframeContainer.appendChild(closeIframe);
   iframeContainer.appendChild(iframe)
@@ -732,7 +736,7 @@ const renderHud = () => {
   
   const chatBttn = createButton(
     'chat-bttn',
-    'chat-bttn bttn',
+    'chat-bttn  bttn litle-size-bttn',
     () => {
       if (modalStates['chat-bttn']) {
         modalStates['chat-bttn'] - false;
@@ -747,7 +751,7 @@ const renderHud = () => {
   
   const helpBttn = createButton(
     'help-bttn',
-    'help-bttn bttn',
+    'help-bttn bttn middle-size-bttn',
     () => {
       if (modalStates['help-bttn']) {
         modalStates['help-bttn'] = false;
@@ -764,7 +768,7 @@ const renderHud = () => {
   const buttons = [ 
     {
       id: 'avatar-bttn',
-      className: 'avatar-bttn bttn',
+      className: 'avatar-bttn bttn big-size-bttn',
       onClick: () => {
         if (modalStates['avatar-bttn']) {
           modalStates['avatar-bttn'] = false;
@@ -779,14 +783,14 @@ const renderHud = () => {
     },
     {
       id: 'map-bttn',
-      className: 'map-bttn bttn',
+      className: 'map-bttn bttn big-size-bttn',
       onClick: () => {
         console.log('openMap');
       }
     },
     {
       id: 'schedule-bttn',
-      className: 'schedule-bttn bttn',
+      className: 'schedule-bttn bttn small-size-bttn',
       onClick: () => {
         if (modalStates['schedule-bttn']) {
           modalStates['schedule-bttn'] = false;
@@ -800,7 +804,7 @@ const renderHud = () => {
     },
     {
       id: 'controls-bttn',
-      className: 'controls-bttn bttn',
+      className: 'controls-bttn bttn small-size-bttn',
       onClick: () => {
         if (modalStates['controls-bttn']) {
           modalStates['controls-bttn'] = false;
@@ -815,12 +819,12 @@ const renderHud = () => {
     },
     {
       id: 'sound-bttn',
-      className: 'sound-bttn bttn',
+      className: 'sound-bttn bttn small-size-bttn',
       onClick: () => console.log('sound')
     },
     {
       id: 'logout-bttn',
-      className: 'logout-bttn bttn',
+      className: 'logout-bttn bttn small-size-bttn',
       onClick: () => {
         if (modalStates['logout-bttn']) {
           modalStates['logout-bttn'] = false;
