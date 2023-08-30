@@ -23,12 +23,65 @@ const baseUrl = "https://admin-brasilagriland.com.br/services";
 // End Variables Sections
 
 // Start Utils Sections
+function applyPaddingsForTotalHeight(buttonId, paragraphId) {
+  const button = document.getElementById(buttonId);
+  const paragraph = document.getElementById(paragraphId);
+
+  const buttonHeight = button.offsetHeight;
+  const fontPixelSize = parseFloat(window.getComputedStyle(paragraph).fontSize);
+  const paddingTotal = buttonHeight - fontPixelSize;
+
+  const padding = paddingTotal / 2;
+
+  paragraph.style.paddingTop = padding - 1 + "px";
+  paragraph.style.paddingBottom = padding - 1 + "px";
+}
+
+
 const genericCreateElement = (type, id, className) => {
   const element = document.createElement(type)
   element.className = className;
   element.id = id;
 
   return element;
+};
+
+const createPlayerHover = () => {
+  const hoverPlayer = genericCreateElement('div', 'hover-player', "botón");
+  
+  hoverPlayer.classList.toggle('active');
+  hoverPlayer.onclick = () => hoverPlayer.classList.toggle('active');
+
+  const background = genericCreateElement('div', 'background-hover-player', 'fondo');
+  const icon = genericCreateElement('div', 'icon-hover-player', 'icono');
+  const leftSide = genericCreateElement('div', 'left-side-hover-player', 'parte izquierda');
+  const rightSide = genericCreateElement('div', 'right-side-hover-player', 'parte derecha');
+  const pointer = genericCreateElement('div', 'pointer', 'puntero');
+
+  background.width = 200;
+  background.height = 200;
+  background.x = 0;
+  background.y = 0;
+
+  icon.width = 200;
+  icon.height = 200;
+
+  leftSide.width = 200;
+  leftSide.height = 200;
+  leftSide.x = 0;
+  leftSide.y = 0;
+  leftSide.fill = '#fff';
+
+  rightSide.width = 200;
+  rightSide.height = 200;
+  rightSide.x = 0;
+  rightSide.y = 0;
+  rightSide.fill = '#fff';
+
+  for (const el of [leftSide, rightSide]) icon.appendChild(el);
+  for (const el of [background, icon, pointer]) hoverPlayer.appendChild(el);
+  
+  return hoverPlayer;
 };
 
 const circleLoadder = () => {
@@ -418,6 +471,20 @@ const renderControlls = () => {
   for (const el of [headerControll, controllContainer]) backPlate.appendChild(el);
 
   playerUI.appendChild(backPlate);
+
+  function refreshPosition() {
+    const button = document.getElementById('controls-bttn');
+    const buttonRect = button.getBoundingClientRect();
+    backPlate.style.left =  buttonRect.left - backPlate.offsetWidth + "px";
+    backPlate.style.top = buttonRect.top + "px";
+  }
+
+  refreshPosition();
+
+  applyPaddingsForTotalHeight('controls-bttn', 'header-controll');
+
+  window.addEventListener("resize", () => refreshPosition('controls-bttn', 'header-controll'));
+  window.addEventListener("resize", refreshPosition);
 };
 
 const renderTutorial  = () => {
@@ -444,7 +511,9 @@ const renderTutorial  = () => {
   const minimizeLabel = genericCreateElement('p', 'minimize-label', 'minimize-label');
   const closeLabel = genericCreateElement('p', 'close-label', 'close-label');
   const player = genericCreateElement('video', 'player', 'player bttn');
-
+  const hoverPlayer = createPlayerHover();
+  
+  player.src = '../public/video/Video_Tutorial.mp4';
   player.autoplay = true;
 
   playerWrapper.onclick = () => {
@@ -460,6 +529,7 @@ const renderTutorial  = () => {
   }
 
   playerWrapper.appendChild(player);
+  playerWrapper.appendChild(hoverPlayer);
 
   player.addEventListener('timeupdate', () => {
     const currentMin = Math.floor(player.currentTime / 60);
@@ -502,10 +572,12 @@ const renderTutorial  = () => {
     if (playVideo) {
       playBttn.className = 'play-bttn bttn active';
       player.play()
+      hoverPlayer.classList.toggle('active');
       playVideo = false;
     } else {
       playBttn.className = 'play-bttn bttn';
       player.pause();
+      hoverPlayer.classList.toggle('active');
       playVideo = true;
     }
   };
@@ -520,12 +592,14 @@ const renderTutorial  = () => {
   tutorialPlayer.appendChild(controlls);
 
   maximizeBttn.onclick = () => {
-    tutorialContainer.className = tutorialContainer.className.replace(' maximize', ' minimize');
+    tutorialContainer.className = tutorialContainer.className.replace(' minimize', ' maximize');
 
     document.getElementById('tutorial-player').style.height = '95%';
     document.getElementById('progress-video').style.bottom = '148px';
     document.getElementById('play-bttn').style.bottom = '81px';
     document.getElementById('video-timer').style.bottom = '33px';
+    
+    document.getElementById('play-bttn').style.visibility = 'visible';
     
     tutorialActions.removeChild(closeContainer);
     tutorialActions.removeChild(maximizeContainer);
@@ -539,15 +613,15 @@ const renderTutorial  = () => {
   maximizeContainer.appendChild(maximizeBttn);
   maximizeContainer.appendChild(maximizeLabel);
 
- 
-
   minimizeBttn.onclick = () => {
-    tutorialContainer.className = tutorialContainer.className.replace(' minimize', ' maximize');
-
+    tutorialContainer.className = tutorialContainer.className.replace(' maximize', ' minimize');
+    
     document.getElementById('tutorial-player').style.height = '85%';
     document.getElementById('progress-video').style.bottom = '167px';
     document.getElementById('play-bttn').style.bottom = '100px';
     document.getElementById('video-timer').style.bottom = '52px';
+
+    document.getElementById('play-bttn').style.visibility = 'hidden';
 
     tutorialContainer.style.top
     
@@ -562,15 +636,12 @@ const renderTutorial  = () => {
   minimizeContainer.appendChild(minimizeBttn);
   minimizeContainer.appendChild(minimizeLabel);
 
- 
-
   closeBttn.onclick = () => {
     const helpBttn = document.getElementById('help-bttn');
     helpBttn.className = helpBttn.className.replace(' active', '');
-    helpInactive = true;
+    modalStates["help-bttn"] = true;
     playerUI.removeChild(tutorialContainer)
   };
-
 
   closeLabel.appendChild(document.createTextNode('Fechar Player'));
 
@@ -626,34 +697,51 @@ const renderSchedule = async data => {
 
   scheduleContainer.appendChild(loading);
 
-  backPlate.appendChild(scheduleContainer);
+  function refreshPosition() {
+    const button = document.getElementById('schedule-bttn');
+    const buttonRect = button.getBoundingClientRect();
+    backPlate.style.left =  buttonRect.left - backPlate.offsetWidth + "px";
+    backPlate.style.top = buttonRect.top + "px";
+  }
 
+  backPlate.appendChild(scheduleContainer);
+  
+  window.addEventListener("resize", refreshPosition);
+  
   playerUI.appendChild(backPlate);
+
+  applyPaddingsForTotalHeight('schedule-bttn', 'header-modal-schedule');
+
+  window.addEventListener("resize", () => refreshPosition('schedule-bttn', 'header-modal-schedule'));
+  
+  refreshPosition()
 
   const list = await fetchList();
 
   if (list.length > 0) {
-    for (let el of list) {
-      const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${el.startAt.hour}:${el.startAt.minute}`;
-      const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${el.endAt.hour}:${el.endAt.minute}`;
+    for (let [index, el] of list.entries()) {
+      const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${String(el.startAt.hour).padStart(2, '0')}:${String(el.startAt.minute).padStart(2, '0')}`;
+      const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${String(el.endAt.hour).padStart(2, '0')}:${String(el.endAt.minute).padStart(2, '0')}`;
       const eventMoment = `${startAtContent} | ${endAtContent}`;
-      // const eventName = el.eventName;
+      const eventName = el.eventName;
       const eventPlace = el.placeName;
   
-      const row = genericCreateElement('div', 'row-schedule', 'row-schedule');
+      const row = genericCreateElement('div', 'row-schedule', `row-schedule ${index % 2 === 0 ? 'grey' : ''}`);
       const rowHeader = genericCreateElement('p', 'row-header-schedule', 'row-header-schedule');
       const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule');
       const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text');
       const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
+      const eventNameElement = genericCreateElement('div', 'event-name-text', 'event-name-text');
       
       eventPlaceText.appendChild(document.createTextNode(eventPlace));
-  
-      eventMomentText.appendChild(document.createTextNode(eventMoment))
+      eventNameElement.appendChild(document.createTextNode(eventName));
+      eventMomentText.appendChild(document.createTextNode(eventMoment));
   
       rowInfos.appendChild(eventPlaceText);
       rowInfos.appendChild(eventMomentText);
-  
+      
       row.appendChild(rowHeader);
+      row.appendChild(eventNameElement);
       row.appendChild(rowInfos);
   
       wrapperRow.appendChild(row);
@@ -675,14 +763,14 @@ const renderChat = (chatNameText) => {
   const chatBttn = document.getElementById('chat-bttn');
 
   const displayChat = genericCreateElement('div', 'display-chat', 'display-chat');
-
+  const closeChat = genericCreateElement('button', 'close-chat-bttn', 'close-chat-bttn bttn');
   const inputChat = genericCreateElement('input', 'input-chat', 'input-chat');
+  const chatContainer = genericCreateElement('div', 'container-chat', 'container-chat');
+
   inputChat.placeholder = "Pressione 'Enter' para interagir com o chat";
   
-  const closeChat = genericCreateElement('button', 'close-chat-bttn', 'close-chat-bttn bttn');
   closeChat.appendChild(document.createTextNode(''));
 
-  const chatContainer = genericCreateElement('div', 'container-chat', 'container-chat');
 
   closeChat.onclick = () => {
     chatBttn.style.visibility = 'visible';
@@ -692,10 +780,7 @@ const renderChat = (chatNameText) => {
   const chatName = genericCreateElement('p', 'chat-name', 'chat-name');
   chatName.appendChild(document.createTextNode(`Chat ${chatNameText}`));
 
-  chatContainer.appendChild(chatName);
-  chatContainer.appendChild(closeChat);
-  chatContainer.appendChild(displayChat);
-  chatContainer.appendChild(inputChat);
+  for (const el of [chatName, closeChat, displayChat, inputChat]) chatContainer.appendChild(el); 
 
   inputChat.addEventListener('keydown', event => {
     if (event.keyCode === 13) {
@@ -840,7 +925,7 @@ const renderHud = () => {
   
   buttons.forEach(value => {
     if (['avatar-bttn', 'map-bttn', 'schedule-bttn', 'controls-bttn', 'sound-bttn', 'logout-bttn'].includes(value.id))
-      topSideBar.appendChild(createButton(value.id, value.className, value.onClick))
+      topSideBar.appendChild(createButton(value.id, value.className, value.onClick));
   });
 
   for (let el of [topSideBar, chatBttn]) sideLeftBar.appendChild(el);
