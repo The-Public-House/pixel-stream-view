@@ -37,7 +37,6 @@ function applyPaddingsForTotalHeight(buttonId, paragraphId) {
   paragraph.style.paddingBottom = padding - 1 + "px";
 }
 
-
 const genericCreateElement = (type, id, className) => {
   const element = document.createElement(type)
   element.className = className;
@@ -372,10 +371,10 @@ const renderQuit = () => {
   const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'close-bttn-quit bttn');
   const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
   const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
-  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container')
+  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container display-flex-column')
   const header = genericCreateElement('p', 'header-quit', 'header-quit');
   const text = genericCreateElement('p', 'text-quit', 'text-quit');
-  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit');
+  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit display-flex-column');
   const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'wrapper-modal-quit');
 
   closeBttn.appendChild(document.createTextNode('X'));
@@ -426,21 +425,21 @@ const renderControlls = () => {
   const playerUI = document.getElementById('playerUI');
 
   const backPlate = genericCreateElement('div', 'back-plate-controll', 'back-plate-controll');
-  const controllContainer = genericCreateElement('div', 'controll-container', 'controll-container');
+  const controllContainer = genericCreateElement('div', 'controll-container', 'controll-container display-flex-column');
   const headerControll = genericCreateElement('p', 'header-controll', 'header-controll');
-  const controlls = genericCreateElement('div', 'controlls', 'controlls');
-  const leftContainer = genericCreateElement('div', 'left-container-controll', 'left-container-controll side-container-controll');
+  const controlls = genericCreateElement('div', 'controlls', 'controlls display-flex-row');
+  const leftContainer = genericCreateElement('div', 'left-container-controll', 'left-container-controll side-container-controll display-flex-column');
   const rightContainer = genericCreateElement('div', 'right-container-controll', 'right-container-controll side-container-controll');
 
   headerControll.appendChild(document.createTextNode('COMANDOS'));
 
   const createControllHelper = (name, content, text) => {
-    const variableControll = genericCreateElement('p', `${name}-controll`, `${name}-controll button-controll`);
+    const variableControll = genericCreateElement('p', `${name}-controll`, `${name}-controll button-controll display-flex-row`);
     variableControll.appendChild(document.createTextNode(content))
   
     const variableControllLabel = genericCreateElement('p', `${name}-controll-label`, `${name}-controll-label`)
 
-    const variableControllContainer = genericCreateElement('div', `${name}ControllContainer`, `${name}-controll-container layout-controll-container`);
+    const variableControllContainer = genericCreateElement('div', `${name}ControllContainer`, `${name}-controll-container layout-controll-container display-flex-row`);
 
     variableControllLabel.appendChild(document.createTextNode(text));
 
@@ -496,16 +495,16 @@ const renderTutorial  = () => {
   const maximizeBttn = genericCreateElement('button', 'maximize-bttn', 'maximize-bttn bttn');
   const minimizeBttn = genericCreateElement('button', 'minimize-bttn', 'minimize-bttn bttn');
   const closeBttn = genericCreateElement('button', 'close-bttn-video', 'close-bttn-video bttn');
-  const controlls = genericCreateElement('div', 'player-controlls', 'player-controlls');
-  const progressVideo = genericCreateElement('div', 'progress-video', 'progress-video bttn');
+  const controlls = genericCreateElement('div', 'player-controlls', 'player-controlls display-flex-column');
+  const progressVideo = genericCreateElement('div', 'progress-video', 'progress-video bttn display-flex-row');
   const markProgress = genericCreateElement('div', 'mark-progress', 'mark-progress bttn');
-  const tutorialPlayer = genericCreateElement('div', 'tutorial-player', 'tutorial-player');
+  const tutorialPlayer = genericCreateElement('div', 'tutorial-player', 'tutorial-player display-flex-column');
   const tutorialContainer = genericCreateElement('div', 'tutorial-container', 'tutorial-container maximize');
-  const tutorialActions = genericCreateElement('div', 'tutorial-actions', 'tutorial-actions');
-  const maximizeContainer = genericCreateElement('div', 'maximize-container', 'maximize-container');
-  const minimizeContainer = genericCreateElement('div', 'minimize-container', 'minimize-container');
+  const tutorialActions = genericCreateElement('div', 'tutorial-actions', 'tutorial-actions display-flex-row');
+  const maximizeContainer = genericCreateElement('div', 'maximize-container', 'maximize-container display-flex-column');
+  const minimizeContainer = genericCreateElement('div', 'minimize-container', 'minimize-container display-flex-column');
   const playerWrapper = genericCreateElement('div', 'player-wrapper', 'player-wrapper');
-  const closeContainer = genericCreateElement('div', 'close-container', 'close-container');
+  const closeContainer = genericCreateElement('div', 'close-container', 'close-container display-flex-column');
   const videoTimer = genericCreateElement('p', 'video-timer', 'video-timer');
   const maximizeLabel = genericCreateElement('p', 'maximize-label', 'maximize-label');
   const minimizeLabel = genericCreateElement('p', 'minimize-label', 'minimize-label');
@@ -658,7 +657,7 @@ const renderTutorial  = () => {
 };
 
 const renderRPM  = () => {
-  const iframeContainer = genericCreateElement('div', 'iframe-container', 'iframe-container');
+  const iframeContainer = genericCreateElement('div', 'iframe-container', 'iframe-container display-flex-row');
   const iframe = genericCreateElement('iframe', 'rpm-iframe', 'rpm-iframe');
   const closeIframe = genericCreateElement('button', 'close-frame-bttn', 'close-frame-bttn bttn');
 
@@ -684,7 +683,7 @@ const renderRPM  = () => {
 const renderSchedule = async data => {
   const playerUI = document.getElementById('playerUI');
   
-  const scheduleContainer = genericCreateElement('div', 'schedule-container', 'schedule-container');
+  const scheduleContainer = genericCreateElement('div', 'schedule-container', 'schedule-container  display-flex-column');
   const backPlate = genericCreateElement('div', 'back-plate-schedule', 'back-plate-schedule');
   const headerModal = genericCreateElement('p', 'header-modal-schedule', 'header-modal-schedule');
   const wrapperRow = genericCreateElement('div', 'wrapper-row', 'wrapper-row');
@@ -726,9 +725,9 @@ const renderSchedule = async data => {
       const eventName = el.eventName;
       const eventPlace = el.placeName;
   
-      const row = genericCreateElement('div', 'row-schedule', `row-schedule ${index % 2 === 0 ? 'grey' : ''}`);
+      const row = genericCreateElement('div', 'row-schedule', `row-schedule ${index % 2 === 0 ? 'grey' : ''} display-flex-column`);
       const rowHeader = genericCreateElement('p', 'row-header-schedule', 'row-header-schedule');
-      const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule');
+      const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule display-flex-row');
       const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text');
       const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
       const eventNameElement = genericCreateElement('div', 'event-name-text', 'event-name-text');
@@ -762,7 +761,7 @@ const renderChat = (chatNameText) => {
   const playerUI = document.getElementById('playerUI');
   const chatBttn = document.getElementById('chat-bttn');
 
-  const displayChat = genericCreateElement('div', 'display-chat', 'display-chat');
+  const displayChat = genericCreateElement('div', 'display-chat', 'display-chat display-flex-column');
   const closeChat = genericCreateElement('button', 'close-chat-bttn', 'close-chat-bttn bttn');
   const inputChat = genericCreateElement('input', 'input-chat', 'input-chat');
   const chatContainer = genericCreateElement('div', 'container-chat', 'container-chat');
@@ -777,7 +776,7 @@ const renderChat = (chatNameText) => {
     playerUI.removeChild(chatContainer);
   };
 
-  const chatName = genericCreateElement('p', 'chat-name', 'chat-name');
+  const chatName = genericCreateElement('p', 'chat-name', 'chat-name display-flex-row');
   chatName.appendChild(document.createTextNode(`Chat ${chatNameText}`));
 
   for (const el of [chatName, closeChat, displayChat, inputChat]) chatContainer.appendChild(el); 
@@ -816,12 +815,12 @@ const renderChat = (chatNameText) => {
 const renderHud = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const sideLeftBar = genericCreateElement('div', 'side-left-bar', 'side-left-bar');
-  const topSideBar = genericCreateElement('div', 'top-side-bar', 'top-side-bar');
+  const sideLeftBar = genericCreateElement('div', 'side-bar', 'side-bar display-flex-column');
+  const topSideBar = genericCreateElement('div', 'top-side-bar', 'side-bar side-bar--top display-flex-column');
   
   const chatBttn = createButton(
     'chat-bttn',
-    'chat-bttn  bttn litle-size-bttn',
+    'bttn bttn--little bttn__chat',
     () => {
       if (modalStates['chat-bttn']) {
         modalStates['chat-bttn'] - false;
@@ -836,7 +835,7 @@ const renderHud = () => {
   
   const helpBttn = createButton(
     'help-bttn',
-    'help-bttn bttn middle-size-bttn',
+    'bttn bttn--middle bttn__help',
     () => {
       if (modalStates['help-bttn']) {
         modalStates['help-bttn'] = false;
@@ -853,7 +852,7 @@ const renderHud = () => {
   const buttons = [ 
     {
       id: 'avatar-bttn',
-      className: 'avatar-bttn bttn big-size-bttn',
+      className: 'bttn bttn--larger bttn-avatar',
       onClick: () => {
         if (modalStates['avatar-bttn']) {
           modalStates['avatar-bttn'] = false;
@@ -868,14 +867,14 @@ const renderHud = () => {
     },
     {
       id: 'map-bttn',
-      className: 'map-bttn bttn big-size-bttn',
+      className: 'bttn bttn--larger bttn__map',
       onClick: () => {
         console.log('openMap');
       }
     },
     {
       id: 'schedule-bttn',
-      className: 'schedule-bttn bttn small-size-bttn',
+      className: 'bttn bttn--small bttn__schedule',
       onClick: () => {
         if (modalStates['schedule-bttn']) {
           modalStates['schedule-bttn'] = false;
@@ -889,7 +888,7 @@ const renderHud = () => {
     },
     {
       id: 'controls-bttn',
-      className: 'controls-bttn bttn small-size-bttn',
+      className: 'bttn bttn--small bttn__controlls',
       onClick: () => {
         if (modalStates['controls-bttn']) {
           modalStates['controls-bttn'] = false;
@@ -904,12 +903,12 @@ const renderHud = () => {
     },
     {
       id: 'sound-bttn',
-      className: 'sound-bttn bttn small-size-bttn',
+      className: 'bttn bttn--small bttn__sound',
       onClick: () => console.log('sound')
     },
     {
       id: 'logout-bttn',
-      className: 'logout-bttn bttn small-size-bttn',
+      className: 'bttn bttn--small bttn__logout',
       onClick: () => {
         if (modalStates['logout-bttn']) {
           modalStates['logout-bttn'] = false;
@@ -930,9 +929,13 @@ const renderHud = () => {
 
   for (let el of [topSideBar, chatBttn]) sideLeftBar.appendChild(el);
   
-  const hudElements = [sideLeftBar, helpBttn];
+  const hudElements = [helpBttn, sideLeftBar];
 
-  for (let hudElement of hudElements) playerUI.appendChild(hudElement);
+  const hudContainer = genericCreateElement('div', 'hud-container', 'hud-container display-flex-row');
+
+  for (let hudElement of hudElements) hudContainer.appendChild(hudElement);
+
+  playerUI.appendChild(hudContainer);
 
   if (userData.rpmLink) {
     const avatarBttn = document.getElementById('avatar-bttn');
@@ -947,12 +950,12 @@ const render = () => {
   const buttonSubmit = createButtonWithText("button-signin", onSubmit, "ENTRAR");
   const buttonRegister = createButtonWithText("login actions", () => window.location.replace("register.html"), "Cadastre-se");
   const buttonForget = createButtonWithText("login actions", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
-  const card = genericCreateElement("div", "card-login", "card-login");
-  const footerCard = genericCreateElement("div", "footer-login", "footer-login");
+  const card = genericCreateElement("div", "card-login", "card-login display-flex-column");
+  const footerCard = genericCreateElement("div", "footer-login", "footer-login display-flex-row");
   const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
   const title = createTitle("Login");
-  const emailInput = createInput("email", "login input-data", "Usuário", "email");
-  const passwordInput = createInput("password", "login input-data", "Senha", "password");
+  const emailInput = createInput("email", "login input-data display-flex-column", "Usuário", "email");
+  const passwordInput = createInput("password", "login input-data display-flex-column", "Senha", "password");
   const alert = genericCreateElement("div", 'alert', '');
 
   // const baseUrl = "http://localhost:3090";
