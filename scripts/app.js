@@ -945,14 +945,14 @@ const render = () => {
   const dividerFooter = createDivider('divider-footer');
   const dividerBottom = createDivider('divider divider-bottom');
   const buttonSubmit = createButtonWithText("button-signin", onSubmit, "ENTRAR");
-  const buttonRegister = createButtonWithText("button-register", () => window.location.replace("register.html"), "Cadastre-se");
-  const buttonForget = createButtonWithText("button-forget", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
+  const buttonRegister = createButtonWithText("login actions", () => window.location.replace("register.html"), "Cadastre-se");
+  const buttonForget = createButtonWithText("login actions", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
   const card = genericCreateElement("div", "card-login", "card-login");
   const footerCard = genericCreateElement("div", "footer-login", "footer-login");
   const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
   const title = createTitle("Login");
-  const emailInput = createInput("email", "email-input", "Usuário", "email");
-  const passwordInput = createInput("password", "password-input", "Senha", "password");
+  const emailInput = createInput("email", "login input-data", "Usuário", "email");
+  const passwordInput = createInput("password", "login input-data", "Senha", "password");
   const alert = genericCreateElement("div", 'alert', '');
 
   // const baseUrl = "http://localhost:3090";
