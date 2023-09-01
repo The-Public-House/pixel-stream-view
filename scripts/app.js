@@ -424,26 +424,26 @@ const renderQuit = () => {
 const renderControlls = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const backPlate = genericCreateElement('div', 'back-plate-controll', 'back-plate-controll');
-  const controllContainer = genericCreateElement('div', 'controll-container', 'controll-container display-flex-column');
-  const headerControll = genericCreateElement('p', 'header-controll', 'header-controll');
-  const controlls = genericCreateElement('div', 'controlls', 'controlls display-flex-row');
-  const leftContainer = genericCreateElement('div', 'left-container-controll', 'left-container-controll side-container-controll display-flex-column');
-  const rightContainer = genericCreateElement('div', 'right-container-controll', 'right-container-controll side-container-controll');
+  const backPlate = genericCreateElement('div', 'back-plate-controll', 'controlls controlls__back-plate');
+  const controllContainer = genericCreateElement('div', 'controll-container', 'controlls controlls__container display-flex-column');
+  const headerControll = genericCreateElement('p', 'header-controll', 'controlls controlls__header');
+  const controlls = genericCreateElement('div', 'controlls', 'controlls controlls__display display-flex-row');
+  const leftContainer = genericCreateElement('div', 'left-container-controll', 'controlls controlls__container container--side container__layout display-flex-column');
+  const rightContainer = genericCreateElement('div', 'right-container-controll', 'controlls controlls__container container--side display-flex-column');
 
   headerControll.appendChild(document.createTextNode('COMANDOS'));
 
   const createControllHelper = (name, content, text) => {
-    const variableControll = genericCreateElement('p', `${name}-controll`, `${name}-controll button-controll display-flex-row`);
+    const variableControll = genericCreateElement('p', `${name}-controll`, `buttons--${name} controlls controlls__buttons display-flex-row`);
     variableControll.appendChild(document.createTextNode(content))
   
     const variableControllLabel = genericCreateElement('p', `${name}-controll-label`, `${name}-controll-label`)
 
-    const variableControllContainer = genericCreateElement('div', `${name}ControllContainer`, `${name}-controll-container layout-controll-container display-flex-row`);
+    const variableControllContainer = genericCreateElement('div', `${name}ControllContainer`, `controlls container--${name} controlls__container container__layout display-flex-row`);
 
     variableControllLabel.appendChild(document.createTextNode(text));
 
-    const variableArrow = genericCreateElement('div', 'arrow', 'arrow');
+    const variableArrow = genericCreateElement('div', 'arrow', 'controlls controlls__arrow');
     
     for (const el of [variableControll, variableArrow, variableControllLabel]) variableControllContainer.appendChild(el);
     
@@ -683,10 +683,10 @@ const renderRPM  = () => {
 const renderSchedule = async data => {
   const playerUI = document.getElementById('playerUI');
   
-  const scheduleContainer = genericCreateElement('div', 'schedule-container', 'schedule-container  display-flex-column');
-  const backPlate = genericCreateElement('div', 'back-plate-schedule', 'back-plate-schedule');
-  const headerModal = genericCreateElement('p', 'header-modal-schedule', 'header-modal-schedule');
-  const wrapperRow = genericCreateElement('div', 'wrapper-row', 'wrapper-row');
+  const scheduleContainer = genericCreateElement('div', 'schedule-container', 'schedule schedule__container  display-flex-column');
+  const backPlate = genericCreateElement('div', 'back-plate-schedule', 'schedule schedule__back-plate');
+  const headerModal = genericCreateElement('p', 'header-modal-schedule', 'schedule schedule__header');
+  const wrapperRow = genericCreateElement('div', 'wrapper-row', 'schedule schedule__row row__wrapper display-flex-column');
   
   headerModal.appendChild(document.createTextNode('AGENDA'));
 
@@ -718,18 +718,24 @@ const renderSchedule = async data => {
   const list = await fetchList();
 
   if (list.length > 0) {
-    for (let [index, el] of list.entries()) {
-      const startAtContent = `${el.startAt.year}/${el.startAt.month}/${el.startAt.day} ${String(el.startAt.hour).padStart(2, '0')}:${String(el.startAt.minute).padStart(2, '0')}`;
-      const endAtContent = `${el.endAt.year}/${el.endAt.month}/${el.endAt.day} ${String(el.endAt.hour).padStart(2, '0')}:${String(el.endAt.minute).padStart(2, '0')}`;
-      const eventMoment = `${startAtContent} | ${endAtContent}`;
+    for (let [index, el] of [...list, ...list, ...list].entries()) {
+      const formatDate = () => {
+        const hour = `${String(el.startAt.hour).padStart(2, '0')}:${String(el.startAt.minute).padStart(2, '0')}`
+
+        if (String(el.startAt.year).length === 4) return `${String(el.startAt.day).padStart(2, '0')}/${String(el.startAt.month).padStart(2, '0')}/${el.startAt.year} ${hour}`;
+        return `${String(el.startAt.year).padStart(2, '0')}/${String(el.startAt.month).padStart(2, '0')}/${el.startAt.day} ${hour}`;
+      }
+
+      const startAtContent = formatDate();
+      console.log(startAtContent);
+      const eventMoment = `${startAtContent}`;
       const eventName = el.eventName;
       const eventPlace = el.placeName;
   
-      const row = genericCreateElement('div', 'row-schedule', `row-schedule ${index % 2 === 0 ? 'grey' : ''} display-flex-column`);
-      const rowHeader = genericCreateElement('p', 'row-header-schedule', 'row-header-schedule');
-      const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'row-infos-schedule display-flex-row');
-      const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text');
-      const eventMomentText = genericCreateElement('p', 'event-moment-text', 'event-moment-text');
+      const row = genericCreateElement('div', 'row-schedule', `schedule schedule__row ${index % 2 === 0 ? 'grey' : ''} display-flex-column`);
+      const rowInfos = genericCreateElement('div', 'row-infos-schedule', 'schedule schedule__row row__infos display-flex-row');
+      const eventPlaceText = genericCreateElement('p', 'event-place-text', 'event-place-text schedule schedule__row row__infos ');
+      const eventMomentText = genericCreateElement('p', 'event-moment-text', 'schedule schedule__row row__time');
       const eventNameElement = genericCreateElement('div', 'event-name-text', 'event-name-text');
       
       eventPlaceText.appendChild(document.createTextNode(eventPlace));
@@ -739,7 +745,6 @@ const renderSchedule = async data => {
       rowInfos.appendChild(eventPlaceText);
       rowInfos.appendChild(eventMomentText);
       
-      row.appendChild(rowHeader);
       row.appendChild(eventNameElement);
       row.appendChild(rowInfos);
   
@@ -761,10 +766,10 @@ const renderChat = (chatNameText) => {
   const playerUI = document.getElementById('playerUI');
   const chatBttn = document.getElementById('chat-bttn');
 
-  const displayChat = genericCreateElement('div', 'display-chat', 'display-chat display-flex-column');
-  const closeChat = genericCreateElement('button', 'close-chat-bttn', 'close-chat-bttn bttn');
-  const inputChat = genericCreateElement('input', 'input-chat', 'input-chat');
-  const chatContainer = genericCreateElement('div', 'container-chat', 'container-chat');
+  const displayChat = genericCreateElement('div', 'display-chat', 'chat chat__screen');
+  const closeChat = genericCreateElement('button', 'close-chat-bttn', 'chat chat__bttn-close bttn');
+  const inputChat = genericCreateElement('input', 'input-chat', 'chat chat__input');
+  const chatContainer = genericCreateElement('div', 'container-chat', 'chat chat__container');
 
   inputChat.placeholder = "Pressione 'Enter' para interagir com o chat";
   
@@ -776,7 +781,7 @@ const renderChat = (chatNameText) => {
     playerUI.removeChild(chatContainer);
   };
 
-  const chatName = genericCreateElement('p', 'chat-name', 'chat-name display-flex-row');
+  const chatName = genericCreateElement('p', 'chat-name', 'chat chat__title display-flex-row');
   chatName.appendChild(document.createTextNode(`Chat ${chatNameText}`));
 
   for (const el of [chatName, closeChat, displayChat, inputChat]) chatContainer.appendChild(el); 
@@ -786,9 +791,9 @@ const renderChat = (chatNameText) => {
       const value = inputChat.value;
 
       if (value !== '') {
-        const user = genericCreateElement('p', 'user-message', 'user-message');
+        const user = genericCreateElement('p', 'user-message', 'chat chat__message chat__message--user');
         const message = genericCreateElement('p', 'text-message', 'text-message');
-        const messageContainer = genericCreateElement('div', 'message-container', 'message-container');
+        const messageContainer = genericCreateElement('div', 'message-container', 'chat chat__message');
         
         user.appendChild(document.createTextNode(`${userData.userData.name} ${userData.userData.lastName}:`));
   
@@ -815,8 +820,8 @@ const renderChat = (chatNameText) => {
 const renderHud = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const sideLeftBar = genericCreateElement('div', 'side-bar', 'side-bar display-flex-column');
-  const topSideBar = genericCreateElement('div', 'top-side-bar', 'side-bar side-bar--top display-flex-column');
+  const sideLeftBar = genericCreateElement('div', '', 'hud-container hud-container--left display-flex-column');
+  const topSideBar = genericCreateElement('div', 'top-side-bar', 'hud-container hud-container--top display-flex-column');
   
   const chatBttn = createButton(
     'chat-bttn',
