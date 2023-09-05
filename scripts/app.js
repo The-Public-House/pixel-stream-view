@@ -51,6 +51,7 @@ const createPlayerHover = () => {
   hoverPlayer.classList.toggle('active');
   hoverPlayer.onclick = () => hoverPlayer.classList.toggle('active');
 
+
   const background = genericCreateElement('div', 'background-hover-player', 'fondo');
   const icon = genericCreateElement('div', 'icon-hover-player', 'icono');
   const leftSide = genericCreateElement('div', 'left-side-hover-player', 'parte izquierda');
@@ -368,14 +369,14 @@ const onSubmit = async () => {
 const renderQuit = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'close-bttn-quit bttn');
-  const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit-bttn bttn');
+  const closeBttn = genericCreateElement('button', 'close-bttn-quit', 'quit quit__close-bttn bttn');
+  const quitBttn = genericCreateElement('button', 'quit-bttn', 'quit quit__content content__wrapper-bttn wrapper-bttn__bttn bttn');
   const quitBttnLabel = genericCreateElement('p', 'quit-bttn-label', 'quit-bttn-label');
-  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit-bttn-container display-flex-column')
-  const header = genericCreateElement('p', 'header-quit', 'header-quit');
-  const text = genericCreateElement('p', 'text-quit', 'text-quit');
-  const contentModal = genericCreateElement('div', 'content-modal-quit', 'content-modal-quit display-flex-column');
-  const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'wrapper-modal-quit');
+  const quitBttnContainer = genericCreateElement('div', 'quit-bttn-container', 'quit quit__content content__wrapper-bttn display-flex-column')
+  const header = genericCreateElement('p', 'header-quit', 'quit quit__content content__header');
+  const text = genericCreateElement('p', 'text-quit', 'quit quit__content content__text');
+  const contentModal = genericCreateElement('div', 'content-modal-quit', 'quit quit__content display-flex-column');
+  const wrapperModal = genericCreateElement('div', 'wrapper-modal-quit', 'quit quit__container');
 
   closeBttn.appendChild(document.createTextNode('X'));
   closeBttn.onclick = () => {
@@ -400,8 +401,6 @@ const renderQuit = () => {
       'chat-bttn': true,
       'logout-bttn': true,
     };
-    console.log(modalStates);
-    console.log(MODAL_STATES_INITIAL);
     
     render();
   };
@@ -491,37 +490,58 @@ const renderTutorial  = () => {
 
   const playerUI = document.getElementById('playerUI');
   
-  const playBttn = genericCreateElement('button', 'play-bttn', 'play-bttn bttn active');
-  const maximizeBttn = genericCreateElement('button', 'maximize-bttn', 'maximize-bttn bttn');
-  const minimizeBttn = genericCreateElement('button', 'minimize-bttn', 'minimize-bttn bttn');
-  const closeBttn = genericCreateElement('button', 'close-bttn-video', 'close-bttn-video bttn');
-  const controlls = genericCreateElement('div', 'player-controlls', 'player-controlls display-flex-column');
-  const progressVideo = genericCreateElement('div', 'progress-video', 'progress-video bttn display-flex-row');
-  const markProgress = genericCreateElement('div', 'mark-progress', 'mark-progress bttn');
-  const tutorialPlayer = genericCreateElement('div', 'tutorial-player', 'tutorial-player display-flex-column');
-  const tutorialContainer = genericCreateElement('div', 'tutorial-container', 'tutorial-container maximize');
-  const tutorialActions = genericCreateElement('div', 'tutorial-actions', 'tutorial-actions display-flex-row');
-  const maximizeContainer = genericCreateElement('div', 'maximize-container', 'maximize-container display-flex-column');
-  const minimizeContainer = genericCreateElement('div', 'minimize-container', 'minimize-container display-flex-column');
-  const playerWrapper = genericCreateElement('div', 'player-wrapper', 'player-wrapper');
-  const closeContainer = genericCreateElement('div', 'close-container', 'close-container display-flex-column');
-  const videoTimer = genericCreateElement('p', 'video-timer', 'video-timer');
-  const maximizeLabel = genericCreateElement('p', 'maximize-label', 'maximize-label');
-  const minimizeLabel = genericCreateElement('p', 'minimize-label', 'minimize-label');
-  const closeLabel = genericCreateElement('p', 'close-label', 'close-label');
-  const player = genericCreateElement('video', 'player', 'player bttn');
+  const tutorialActions = genericCreateElement('div', 'tutorial-actions', 'tutorial tutorial__actions display-flex-row');
+  
+  const maximizeContainer = genericCreateElement('div', 'maximize-container', 'tutorial tutorial__actions actions__maximize display-flex-column');
+  const maximizeBttn = genericCreateElement('button', 'maximize-bttn', 'tutorial tutorial__actions actions__maximize maximize__bttn bttn');
+  const maximizeLabel = genericCreateElement('p', 'maximize-label', 'tutorial tutorial__actions actions__maximize maximize__label');
+  
+  const minimizeContainer = genericCreateElement('div', 'minimize-container', 'tutorial tutorial__actions actions__minimize display-flex-column');
+  const minimizeBttn = genericCreateElement('button', 'minimize-bttn', 'tutorial tutorial__actions actions__minimize minimize__bttn bttn');
+  const minimizeLabel = genericCreateElement('p', 'minimize-label', 'tutorial tutorial__actions actions__minimize minimize__label');
+  
+  const closeContainer = genericCreateElement('div', 'close-container', 'tutorial tutorial__actions actions__close display-flex-column');
+  const closeBttn = genericCreateElement('button', 'close-bttn-video', 'tutorial tutorial__actions actions__close close__bttn bttn');
+  const closeLabel = genericCreateElement('p', 'close-label', 'tutorial tutorial__actions actions__close close__label');
+  
+  const player = genericCreateElement('video', 'player', 'tutorial tutorial__player video__wrapper video');
+  const tutorialPlayer = genericCreateElement('div', 'tutorial-player', 'tutorial tutorial__player display-flex-column');
+  const tutorialContainer = genericCreateElement('div', 'tutorial-container', 'tutorial tutorial__container container--maximize');
+  const playerWrapper = genericCreateElement('div', 'player-wrapper', 'tutorial tutorial__player video__wrapper');
+  
+  const controlls = genericCreateElement('div', 'player-controlls', 'tutorial tutorial__controlls controlls__container display-flex-column');
+  const videoTimer = genericCreateElement('p', 'video-timer', 'tutorial tutorial__controlls controlls__timer');
+  const playBttn = genericCreateElement('button', 'play-bttn', 'tutorial tutorial__controlls controlls__play-bttn active');
+  
+  const progressVideo = genericCreateElement('div', 'progress-video', 'tutorial tutorial__controlls controlls__progress bttn display-flex-row');
+  const markProgress = genericCreateElement('div', 'mark-progress', 'tutorial tutorial__controlls controlls__progress progress__mark bttn');
+  
   const hoverPlayer = createPlayerHover();
   
   player.src = '../public/video/Video_Tutorial.mp4';
   player.autoplay = true;
 
+  const showPlayBttn = (hiddenBefore, onPlay) => {  
+    const hoverPlayer = document.getElementById('hover-player');
+    if (!onPlay) hoverPlayer.classList.toggle('active');
+    hoverPlayer.style.visibility = 'visible';
+
+    if (hiddenBefore) {
+      setTimeout(() => {
+        hoverPlayer.style.visibility = 'hidden';
+      }, 500)
+    }
+  }
+
   playerWrapper.onclick = () => {
     if (playVideo) {
-      playBttn.className = 'play-bttn bttn active';
+      showPlayBttn(true, true);
+      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn active';
       player.play()
       playVideo = false;
     } else {
-      playBttn.className = 'play-bttn bttn';
+      showPlayBttn(false, false);
+      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn';
       player.pause();
       playVideo = true;
     }
@@ -544,7 +564,8 @@ const renderTutorial  = () => {
     markProgress.style.marginLeft = `${percentage}%`;
 
     if (currentTime === totalTime) {
-      playBttn.className = 'play-bttn bttn';
+      showPlayBttn(false, false);
+      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn';
       player.currentTime = 0;
       playVideo = true;
     }
@@ -569,14 +590,15 @@ const renderTutorial  = () => {
   
   playBttn.onclick = () => {
     if (playVideo) {
-      playBttn.className = 'play-bttn bttn active';
+      showPlayBttn(true, true);
+      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn active';
       player.play()
-      hoverPlayer.classList.toggle('active');
       playVideo = false;
     } else {
-      playBttn.className = 'play-bttn bttn';
+      showPlayBttn(false, false);
+      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn';
       player.pause();
-      hoverPlayer.classList.toggle('active');
+      hoverPlayer.classList('active');
       playVideo = true;
     }
   };
@@ -591,7 +613,7 @@ const renderTutorial  = () => {
   tutorialPlayer.appendChild(controlls);
 
   maximizeBttn.onclick = () => {
-    tutorialContainer.className = tutorialContainer.className.replace(' minimize', ' maximize');
+    tutorialContainer.className = tutorialContainer.className.replace('minimize', 'maximize');
 
     document.getElementById('tutorial-player').style.height = '95%';
     document.getElementById('progress-video').style.bottom = '148px';
@@ -613,8 +635,8 @@ const renderTutorial  = () => {
   maximizeContainer.appendChild(maximizeLabel);
 
   minimizeBttn.onclick = () => {
-    tutorialContainer.className = tutorialContainer.className.replace(' maximize', ' minimize');
-    
+    tutorialContainer.className = tutorialContainer.className.replace('maximize', 'minimize');
+
     document.getElementById('tutorial-player').style.height = '85%';
     document.getElementById('progress-video').style.bottom = '167px';
     document.getElementById('play-bttn').style.bottom = '100px';
@@ -657,9 +679,9 @@ const renderTutorial  = () => {
 };
 
 const renderRPM  = () => {
-  const iframeContainer = genericCreateElement('div', 'iframe-container', 'iframe-container display-flex-row');
-  const iframe = genericCreateElement('iframe', 'rpm-iframe', 'rpm-iframe');
-  const closeIframe = genericCreateElement('button', 'close-frame-bttn', 'close-frame-bttn bttn');
+  const iframeContainer = genericCreateElement('div', 'iframe-container', 'rpm rpm__container display-flex-row');
+  const iframe = genericCreateElement('iframe', 'rpm-iframe', 'rpm rpm__iframe');
+  const closeIframe = genericCreateElement('button', 'close-frame-bttn', 'rpm rpm__close bttn');
 
   iframe.src = 'https://agriland.readyplayer.me/avatar?frameApi&bodyType=fullbody';
   iframe.sandbox= "allow-forms allow-scripts allow-same-origin";
@@ -727,7 +749,6 @@ const renderSchedule = async data => {
       }
 
       const startAtContent = formatDate();
-      console.log(startAtContent);
       const eventMoment = `${startAtContent}`;
       const eventName = el.eventName;
       const eventPlace = el.placeName;
