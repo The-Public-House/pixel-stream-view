@@ -209,34 +209,7 @@ const serverLogin = () => {
   playerUI.style.visibility = "visible";
 }
 
-const createButton = (id, className, onClick) => {
-  const playerUI = document.getElementById('playerUI');
-  let activeBttn = true;
-  const button = genericCreateElement('button', id , className);
 
-  button.onclick = () => {
-    button.className = `${className}${activeBttn ? ' active' : ''}`
-    activeBttn = !activeBttn;
-
-    const state = modalStates[`${id}`];
-    if (state) {
-      const states = Object.entries(modalStates).filter(value => value[0] !== id);
-
-      states.forEach(value => {
-        const el = document.getElementById(modalsContainers[value[0]]);
-        if (el) {
-          playerUI.removeChild(el);
-          const bttn = document.getElementById(value[0]);
-          bttn.className = bttn.className.replace(' active', '');
-        }
-      });
-    }
-
-    onClick();
-  };
-
-  return button;
-};
 
 const createInput = (id, className, labelText, type) => {
   const input = genericCreateElement("input", id, '');
@@ -719,6 +692,10 @@ const renderSchedule = async data => {
 
   scheduleContainer.appendChild(loading);
 
+  backPlate.appendChild(scheduleContainer);
+  
+  playerUI.appendChild(backPlate);
+
   function refreshPosition() {
     const button = document.getElementById('schedule-bttn');
     const buttonRect = button.getBoundingClientRect();
@@ -726,19 +703,34 @@ const renderSchedule = async data => {
     backPlate.style.top = buttonRect.top + "px";
   }
 
-  backPlate.appendChild(scheduleContainer);
-  
-  window.addEventListener("resize", refreshPosition);
-  
-  playerUI.appendChild(backPlate);
+  function grudarDivAoBotao(botaoId, divId) {
+    const botao = document.getElementById(botaoId);
+    const div = document.getElementById(divId);
+
+    if (!botao || !div) {
+        console.error("Botão ou div não encontrados.");
+        return;
+    }
+
+    const botaoRect = botao.getBoundingClientRect();
+
+    div.style.position = "absolute";
+    div.style.right = (window.innerWidth - botaoRect.left) + "px";
+    div.style.top = botaoRect.top + "px";
+    div.style.zIndex = "1000";
+
+    window.addEventListener("resize", () => {
+        const botaoRect = botao.getBoundingClientRect();
+        div.style.right = (window.innerWidth - botaoRect.left) + "px";
+        div.style.top = botaoRect.top + "px";
+    });
+  }
 
   applyPaddingsForTotalHeight('schedule-bttn', 'header-modal-schedule');
+  grudarDivAoBotao('schedule-bttn', 'back-plate-schedule')
+
   window.addEventListener("resize", () => applyPaddingsForTotalHeight('schedule-bttn', 'header-modal-schedule'));
-
-  window.addEventListener("resize", () => refreshPosition('schedule-bttn', 'header-modal-schedule'));
   
-  refreshPosition()
-
   const list = await fetchList();
 
   if (list.length > 0) {
@@ -798,7 +790,6 @@ const renderChat = (chatNameText) => {
   
   closeChat.appendChild(document.createTextNode(''));
 
-
   closeChat.onclick = () => {
     chatBttn.style.visibility = 'visible';
     playerUI.removeChild(chatContainer);
@@ -840,10 +831,41 @@ const renderChat = (chatNameText) => {
   playerUI.appendChild(chatContainer);
 };
 
+const createButton = (id, className, onClick) => {
+  const playerUI = document.getElementById('playerUI');
+  let activeBttn = true;
+  const button = genericCreateElement('button', id , className);
+
+  button.onclick = () => {
+    button.className = `${className}${activeBttn ? ' active' : ''}`
+    activeBttn = !activeBttn;
+
+    const state = modalStates[`${id}`];
+    if (state) {
+      const states = Object.entries(modalStates).filter(value => value[0] !== id);
+
+      states.forEach(value => {
+        const el = document.getElementById(modalsContainers[value[0]]);
+        if (el) {
+          if (el.id === 'container-chat') document.getElementById('chat-bttn').style.visibility = 'visible';
+
+          playerUI.removeChild(el);
+          const bttn = document.getElementById(value[0]);
+          bttn.className = bttn.className.replace(' active', '');
+        }
+      });
+    }
+
+    onClick();
+  };
+
+  return button;
+};
+
 const renderHud = () => {
   const playerUI = document.getElementById('playerUI');
 
-  const sideLeftBar = genericCreateElement('div', '', 'hud-container hud-container--left display-flex-column');
+  const sideLeftBar = genericCreateElement('div', 'hud-container--left', 'hud-container hud-container--left display-flex-column');
   const topSideBar = genericCreateElement('div', 'top-side-bar', 'hud-container hud-container--top display-flex-column');
   
   const chatBttn = createButton(
@@ -880,7 +902,7 @@ const renderHud = () => {
   const buttons = [ 
     {
       id: 'avatar-bttn',
-      className: 'bttn bttn--larger bttn-avatar',
+      className: 'bttn bttn--larger bttn__avatar',
       onClick: () => {
         if (modalStates['avatar-bttn']) {
           modalStates['avatar-bttn'] = false;
@@ -973,13 +995,12 @@ const renderHud = () => {
 
 const render = () => {
   const dividerTop = createDivider('divider divider-top');
-  const dividerFooter = createDivider('divider-footer');
   const dividerBottom = createDivider('divider divider-bottom');
   const buttonSubmit = createButtonWithText("button-signin", onSubmit, "ENTRAR");
   const buttonRegister = createButtonWithText("login actions", () => window.location.replace("register.html"), "Cadastre-se");
   const buttonForget = createButtonWithText("login actions", () => window.location.replace("forget.html"), "Esqueceu sua senha?");
   const card = genericCreateElement("div", "card-login", "card-login display-flex-column");
-  const footerCard = genericCreateElement("div", "footer-login", "footer-login display-flex-row");
+  const footerCard = genericCreateElement("div", "footer-login", "footer-login display-flex-column");
   const submitContainer = genericCreateElement("div", "submit-container", "submit-container");
   const title = createTitle("Login");
   const emailInput = createInput("email", "login input-data display-flex-column", "Usuário", "email");
@@ -1000,7 +1021,7 @@ const render = () => {
 
   submitContainer.appendChild(buttonSubmit);
 
-  appendChilds(footerCard, [buttonRegister, dividerFooter, buttonForget]);
+  appendChilds(footerCard, [buttonRegister, buttonForget]);
 
   appendChilds(card, [
     title,

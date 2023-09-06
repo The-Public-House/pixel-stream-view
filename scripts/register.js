@@ -178,6 +178,17 @@ const main = () => {
 
   const modals = document.querySelectorAll('[data-modal]');
 
+  const checkboxs = document.querySelectorAll('.checkbox-interest')
+
+  checkboxs.forEach(value => {
+    value.addEventListener('click', () => {
+      if (!value.checked) {
+        const allChecked = document.getElementById('allChecked');
+        allChecked.checked = false;
+      }
+    })
+  })
+
   modals.forEach(function (trigger) {
     trigger.addEventListener('click', function (event) {
       event.preventDefault();
@@ -202,7 +213,7 @@ const main = () => {
 
   document.getElementById("partOf").addEventListener("click", () => {
     const noPartOf = document.getElementById("noPartOf");
-    noPartOf.checked = false;
+    noPartOf.checked = false; 
 
     for (const input of optionalInputs) {
       const inp = document.getElementById(input);
@@ -222,12 +233,13 @@ const main = () => {
 
   document.getElementById("allChecked").addEventListener('click', () => {
     const allUnChecked = document.getElementById("allUnChecked");
-    allUnChecked.checked = false;
+    const allChecked = document.getElementById('allChecked')
+    allUnChecked.checked = !allChecked.checked;
+    
     
     for (const interest of interestList) {
       const checkbox = document.getElementById(interest)
-      
-      checkbox.checked = true;
+      checkbox.checked = allChecked.checked;
     }
   })
 

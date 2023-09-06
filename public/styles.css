@@ -10,28 +10,28 @@
   }
 
   &.bttn--larger {
-    width: 100%;
-    height: 22%;
+    width: 115.2px;
+    height: 114.633px;
   }
 
   &.bttn--middle {
-    width: 3.8%;
-    height: 7.8%;
+    width: 51.8334px;
+    height: 52.1px;
   }
   
   &.bttn--small {
-    width: 45%;
-    height: 10%;
+    width: 51.8333px;
+    height: 52.1px;
   }
 
   &.bttn--little {
-    height: 4.2%;
-    width: 30%;
+    height: 34.55px;
+    width: 40.5167px;
   }
 
   &.bttn__help {    
-    margin-top: 0.3%;
-    margin-left: 0.4%;
+    margin-top: 8.05px;
+    margin-left: 8.05px;
 
     background-image: url('./icons/T_Help_Off.PNG');
   
@@ -43,12 +43,15 @@
   }
 
   &.bttn__avatar {
+    margin-top: 8.05px;
+    margin-right: 8.05px;
     background-size: 150% 140%;
     border: 2.5px solid var(--primary-color);
   }
 
   &.bttn__map {
     background-image: url('./icons/T_Map_Off.PNG');
+    margin-right: 8.05px;
   
     &:hover, &.active {
       transition: 0.5s;
@@ -59,6 +62,8 @@
   }
 
   &.bttn__schedule {
+    margin-right: 8.05px;
+
     background-image: url('./icons/T_Diary_Off.PNG');
   
     &:hover, &.active {
@@ -69,6 +74,8 @@
   }
 
   &.bttn__controlls {
+    margin-right: 8.05px;
+
     background-image: url('./icons/T_Control_Off.PNG');
   
     &:hover, &.active {
@@ -79,6 +86,8 @@
   }
 
   &.bttn__sound {
+    margin-right: 8.05px;
+
     background-image: url('./icons/T_Speaker_On.PNG');
 
     &:hover, &.active {
@@ -90,6 +99,8 @@
   }
 
   &.bttn__logout {
+    margin-right: 8.05px;
+
     background-image: url('./icons/T_Exit_Off.PNG');
 
     &:hover, &.active {
@@ -102,8 +113,12 @@
   &.bttn__chat {
     background-image: url('./icons/T_ChatIcon_Off.PNG');
 
-    margin-bottom: 7%;
-    margin-right: 7%;
+    margin-bottom: 8.05px;
+    margin-right: 8.05px;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
 
     &:hover {
       transition: 0.5s;
@@ -114,25 +129,28 @@
 }
 
 .hud-container {
-  justify-content: space-between;
-  
   height: 100%;
   width: 100%;
 
   &.hud-container--left {
     gap: 10px;
-    width: 6%;
     align-items: end;
   }
   
   &.hud-container--top {
     width: 100%;
-    height: 54%;
+    height: 100%;
 
-    margin-top: 7%;
-    margin-right: 7%;
+    gap: 12px;
+
+    margin-top: 0;
+    margin-right: 0;
 
     align-items: end;
+
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 
