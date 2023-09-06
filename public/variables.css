@@ -1,16 +1,19 @@
 :root {
-  --primary-color: #dcdc01;
   --mobile: (max-width: 480px);
   --tablet: (min-width: 768px) and (max-width: 1024px);
   --desktop: (min-width: 1024px) and (max-width: 1440px);
   --large-laptop: (min-width: 1440px) and (max-width: 1680px);
   --large-desktop: (min-width: 1920px);
+  
+  --primary-color: #dcdc01;
+  
   --border: 2.5px solid var(--primary-color);
 }
 
 html {
   height: 100vh;
   width: 100vw;
+  font-size: 16px;
 
   & body {
     width: 100%;
