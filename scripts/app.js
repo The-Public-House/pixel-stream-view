@@ -696,13 +696,6 @@ const renderSchedule = async data => {
   
   playerUI.appendChild(backPlate);
 
-  function refreshPosition() {
-    const button = document.getElementById('schedule-bttn');
-    const buttonRect = button.getBoundingClientRect();
-    backPlate.style.left =  buttonRect.left - backPlate.offsetWidth + "px";
-    backPlate.style.top = buttonRect.top + "px";
-  }
-
   function grudarDivAoBotao(botaoId, divId) {
     const botao = document.getElementById(botaoId);
     const div = document.getElementById(divId);
@@ -715,13 +708,11 @@ const renderSchedule = async data => {
     const botaoRect = botao.getBoundingClientRect();
 
     div.style.position = "absolute";
-    div.style.right = (window.innerWidth - botaoRect.left) + "px";
     div.style.top = botaoRect.top + "px";
     div.style.zIndex = "1000";
 
     window.addEventListener("resize", () => {
         const botaoRect = botao.getBoundingClientRect();
-        div.style.right = (window.innerWidth - botaoRect.left) + "px";
         div.style.top = botaoRect.top + "px";
     });
   }

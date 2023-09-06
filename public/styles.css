@@ -138,7 +138,7 @@
   }
   
   &.hud-container--top {
-    width: 100%;
+    width: 80%;
     height: 100%;
 
     gap: 12px;
@@ -162,8 +162,8 @@
     bottom: 2.3%;
     right: 1%;
   
-    width: 31.3%; 
-    height: 30.8%;
+    width: 600.95px; 
+    height: 297.217px;
   
     background: #ffffffd9;
   }
@@ -263,8 +263,10 @@
 
 .schedule {
   &.schedule__back-plate {
-    width: 29.5%;
-    height: 30%;
+    width: 568.4px;
+    height: 289.5px;
+
+    right: 54.9px;
 
     position: absolute;
   }
@@ -492,8 +494,8 @@
 
     font-family: sans-serif;
 
-    width: 19.8%;
-    height: 17.2%;
+    width: 380.15px;
+    height: 165.967px;
 
     display: flex;
     justify-content: center;
@@ -557,7 +559,8 @@
     
     background: white;
   
-    height: 20%;
+    height: 30px;
+    width: 30px;
     
     border: 2px solid red;
     
