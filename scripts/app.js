@@ -388,8 +388,8 @@ const renderQuit = () => {
 
   quitBttn.onclick = () => {
     playerUI.removeChild(document.getElementById('wrapper-modal-quit'));
-    playerUI.removeChild(document.getElementById('help-bttn'));
-    playerUI.removeChild(document.getElementById('side-left-bar'));
+    // playerUI.removeChild(document.getElementById('help-bttn'));
+    playerUI.removeChild(document.getElementById('hud-container'));
     const root = document.getElementById('root');
     root.removeChild(document.getElementById('card-login'));
     root.style.display = '';
