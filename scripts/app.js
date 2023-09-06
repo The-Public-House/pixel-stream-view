@@ -480,6 +480,7 @@ const renderControlls = () => {
   refreshPosition();
 
   applyPaddingsForTotalHeight('controls-bttn', 'header-controll');
+  window.addEventListener("resize", () => applyPaddingsForTotalHeight('controls-bttn', 'header-controll'));
 
   window.addEventListener("resize", () => refreshPosition('controls-bttn', 'header-controll'));
   window.addEventListener("resize", refreshPosition);
@@ -732,6 +733,7 @@ const renderSchedule = async data => {
   playerUI.appendChild(backPlate);
 
   applyPaddingsForTotalHeight('schedule-bttn', 'header-modal-schedule');
+  window.addEventListener("resize", () => applyPaddingsForTotalHeight('schedule-bttn', 'header-modal-schedule'));
 
   window.addEventListener("resize", () => refreshPosition('schedule-bttn', 'header-modal-schedule'));
   
