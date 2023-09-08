@@ -10,8 +10,8 @@
   }
 
   &.bttn--larger {
-    width: 115.2px;
-    height: 114.633px;
+    min-width: 115.2px;
+    min-height: 114.633px;
   }
 
   &.bttn--middle {
@@ -20,8 +20,8 @@
   }
   
   &.bttn--small {
-    width: 51.8333px;
-    height: 52.1px;
+    min-width: 51.8333px;
+    min-height: 52.1px;
   }
 
   &.bttn--little {
@@ -812,5 +812,25 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-height: 554px) {
+  #top-side-bar {
+    background-image: red;
+    overflow-y: scroll;
+    height: 80%;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--primary-color);
+    }
+  
+    &::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
   }
 }
