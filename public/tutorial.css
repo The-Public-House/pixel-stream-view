@@ -143,18 +143,6 @@
     /* margin-top: 10px; */
 
     font-size: 16px;
-  
-    @media screen and (min-width: 1440px) and (max-width: 1680px) {
-      font-size: 16px;
-    }
-
-    @media screen and (min-width: 1024px) and (max-width: 1440px) {
-      font-size: 16px;
-    }
-
-    @media screen and (min-width: 768px) and (max-width: 1024px) {
-      font-size: 0.4rem;
-    }
 
     &.actions__close {
       margin-top: 10px;
