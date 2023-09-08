@@ -23,6 +23,41 @@ const baseUrl = "https://admin-brasilagriland.com.br/services";
 // End Variables Sections
 
 // Start Utils Sections
+const httpGet = (endPoint, onSuccess) => {
+  fetch(endPoint)
+    .then(function(response) {
+      if (response.status === 200) {
+        onSuccess()
+      } else {
+        throw new Error(`Erro: Código de status ${response.status}`);
+      }
+    })
+    .then(function(data) {
+      console.log(data);
+    })
+    .catch(function(error) {
+      console.error(error);
+    });
+}
+
+const clickOutClose = (backplateId, bttnId, state) => {
+  function handleClickOutside(event) {
+    const backPlate = document.getElementById(backplateId);
+    const bttn = document.getElementById(bttnId);
+
+    if (backPlate && !backPlate.contains(event.target) && bttn && !bttn.contains(event.target)) {
+      if (backPlate) {
+        modalStates[state] = true;
+        bttn.className = bttn.className.replace(' active', '');
+        playerUI.removeChild(backPlate);
+        document.removeEventListener('click', handleClickOutside);
+      }
+    }
+  }
+  
+  document.addEventListener('click', handleClickOutside);
+}
+
 function applyPaddingsForTotalHeight(buttonId, paragraphId) {
   const button = document.getElementById(buttonId);
   const paragraph = document.getElementById(paragraphId);
@@ -443,6 +478,12 @@ const renderControlls = () => {
 
   playerUI.appendChild(backPlate);
 
+  clickOutClose(
+    'back-plate-controll',
+    'controls-bttn',
+    'controls-bttn'
+  );
+
   function refreshPosition() {
     const button = document.getElementById('controls-bttn');
     const buttonRect = button.getBoundingClientRect();
@@ -693,6 +734,12 @@ const renderSchedule = async data => {
   scheduleContainer.appendChild(loading);
 
   backPlate.appendChild(scheduleContainer);
+
+  clickOutClose(
+    'back-plate-schedule',
+    'schedule-bttn',
+    'schedule-bttn'
+  );
   
   playerUI.appendChild(backPlate);
 
@@ -917,9 +964,12 @@ const renderHud = () => {
       id: 'schedule-bttn',
       className: 'bttn bttn--small bttn__schedule',
       onClick: () => {
-        if (modalStates['schedule-bttn']) {
+        const scheduleModalOpen = document.getElementById('back-plate-schedule');
+        if (!scheduleModalOpen) {
           modalStates['schedule-bttn'] = false;
           renderSchedule();
+          const bttn = document.getElementById('schedule-bttn');
+          if (!bttn.className.includes('active')) bttn.className = bttn.className + ' active';
         } else {
           modalStates['schedule-bttn'] = true;
           const playerUI = document.getElementById('playerUI');
@@ -931,9 +981,12 @@ const renderHud = () => {
       id: 'controls-bttn',
       className: 'bttn bttn--small bttn__controlls',
       onClick: () => {
-        if (modalStates['controls-bttn']) {
+        const controllsModalOpen = document.getElementById('back-plate-controll');
+        if (!controllsModalOpen) {
           modalStates['controls-bttn'] = false;
           renderControlls();
+          const bttn = document.getElementById('controls-bttn');
+          if (!bttn.className.includes('active')) bttn.className = bttn.className + ' active';
         }
         else {
           modalStates['controls-bttn'] = true;
@@ -962,7 +1015,7 @@ const renderHud = () => {
       }
     },
   ];
-  
+
   buttons.forEach(value => {
     if (['avatar-bttn', 'map-bttn', 'schedule-bttn', 'controls-bttn', 'sound-bttn', 'logout-bttn'].includes(value.id))
       topSideBar.appendChild(createButton(value.id, value.className, value.onClick));
@@ -980,7 +1033,27 @@ const renderHud = () => {
 
   if (userData.rpmLink) {
     const avatarBttn = document.getElementById('avatar-bttn');
-    if (avatarBttn) avatarBttn.style.backgroundImage = `url("${(userData.rpmLink).replace('.glb', '.png')}")`;
+    
+    if (avatarBttn) {
+      const loadingIndicator = circleLoadder();
+      loadingIndicator.className = 'loadingRoller';
+      avatarBttn.appendChild(loadingIndicator);
+      
+      const backgroundImage = new Image();
+      backgroundImage.src = (userData.rpmLink).replace('.glb', '.png');
+      
+      backgroundImage.onload = function() {
+        avatarBttn.style.backgroundImage = `url("${backgroundImage.src}")`;
+        
+        avatarBttn.removeChild(loadingIndicator);
+      };
+      
+      backgroundImage.onerror = function() {
+        console.error('Erro ao carregar a imagem');
+        
+        avatarBttn.removeChild(loadingIndicator);
+      };
+    }
   }
 };
 
