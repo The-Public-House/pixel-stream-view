@@ -86,7 +86,6 @@ const createPlayerHover = () => {
   hoverPlayer.classList.toggle('active');
   hoverPlayer.onclick = () => hoverPlayer.classList.toggle('active');
 
-
   const background = genericCreateElement('div', 'background-hover-player', 'fondo');
   const icon = genericCreateElement('div', 'icon-hover-player', 'icono');
   const leftSide = genericCreateElement('div', 'left-side-hover-player', 'parte izquierda');
@@ -530,6 +529,22 @@ const renderTutorial  = () => {
   
   const progressVideo = genericCreateElement('div', 'progress-video', 'tutorial tutorial__controlls controlls__progress bttn display-flex-row');
   const markProgress = genericCreateElement('div', 'mark-progress', 'tutorial tutorial__controlls controlls__progress progress__mark bttn');
+
+  player.addEventListener('pause', () => {
+    const hoverPlayer = document.getElementById('hover-player'); // add active
+    const controllPlayer = document.getElementById('play-bttn'); // add active
+
+    hoverPlayer.className = hoverPlayer.className + ' active';
+    controllPlayer.className = controllPlayer.className + ' active'; 
+  });
+
+  player.addEventListener('play', () => {
+    const hoverPlayer = document.getElementById('hover-player'); // rem active
+    const controllPlayer = document.getElementById('play-bttn'); // rem active
+
+    hoverPlayer.className = hoverPlayer.className.replace(' active', '');
+    controllPlayer.className = controllPlayer.className.replace(' active', '');
+  })
   
   const hoverPlayer = createPlayerHover();
   
@@ -537,8 +552,6 @@ const renderTutorial  = () => {
   player.autoplay = true;
 
   const showPlayBttn = (hiddenBefore, onPlay) => {  
-    const hoverPlayer = document.getElementById('hover-player');
-    if (!onPlay) hoverPlayer.classList.toggle('active');
     hoverPlayer.style.visibility = 'visible';
 
     if (hiddenBefore) {
@@ -587,7 +600,6 @@ const renderTutorial  = () => {
   });
 
   progressVideo.onclick = e => {
-    player.pause();
     const progressBar = progressVideo.getBoundingClientRect();
     const clickX = e.clientX - progressBar.left;
     const percentage = (clickX / progressBar.width) * 100;
@@ -597,8 +609,6 @@ const renderTutorial  = () => {
     const newCurrentTime = (player.duration * percentage) / 100;
 
     player.currentTime = newCurrentTime;
-
-    player.play();
   };
 
   progressVideo.appendChild(markProgress);
@@ -606,14 +616,11 @@ const renderTutorial  = () => {
   playBttn.onclick = () => {
     if (playVideo) {
       showPlayBttn(true, true);
-      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn active';
       player.play()
       playVideo = false;
     } else {
       showPlayBttn(false, false);
-      playBttn.className = 'tutorial tutorial__controlls controlls__play-bttn';
       player.pause();
-      hoverPlayer.classList('active');
       playVideo = true;
     }
   };
